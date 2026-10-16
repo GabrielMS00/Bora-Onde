@@ -30,7 +30,9 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# local env files (segredos: .env.seed guarda a service_role do Supabase, nunca versionar)
+.env
+.env.seed
 .env*.local
 
 # typescript
