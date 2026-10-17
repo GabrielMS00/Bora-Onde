@@ -8,7 +8,7 @@ App mobile que centraliza opções de restaurantes, cafeterias e bares em um fee
 
 ## Stack
 
-- Expo (SDK 58) + Expo Router + TypeScript
+- Expo (SDK 57, compatível com o Expo Go da App Store) + Expo Router + TypeScript
 - NativeWind 4 (Tailwind 3) com os tokens do Figma
 - Supabase (Postgres + Auth + Storage) — a partir da fase 3
 
