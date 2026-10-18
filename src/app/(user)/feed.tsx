@@ -1,5 +1,6 @@
-import { StubScreen } from '@/components/dev/StubScreen';
+import { FeedScreen } from '@/features/feed/FeedScreen';
 
+// 2.1 / 2.1b Feed da cidade (filtros rápidos inclusos).
 export default function UserFeedScreen() {
-  return <StubScreen title="Perto de você" figma="2.1 / 2.1b" phase={5} tab />;
+  return <FeedScreen mode="user" />;
 }

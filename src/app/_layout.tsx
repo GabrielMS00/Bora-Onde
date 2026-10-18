@@ -1,9 +1,10 @@
 import '../global.css';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ToastProvider } from '@/components/ui/Toast';
 import { SessionProvider, useSession } from '@/features/auth/session';
@@ -45,15 +46,19 @@ function Routes() {
 
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useAppFonts();
+  // Chaves de consulta pessoais incluem o id da conta; as de lugares são públicas por cidade — não precisa limpar no logout.
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } }));
 
   if (!fontsLoaded && !fontsError) return null;
 
   return (
-    <SessionProvider>
-      <ToastProvider>
-        <StatusBar style="dark" />
-        <Routes />
-      </ToastProvider>
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <ToastProvider>
+          <StatusBar style="dark" />
+          <Routes />
+        </ToastProvider>
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }

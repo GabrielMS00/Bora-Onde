@@ -1,5 +1,6 @@
-import { StubScreen } from '@/components/dev/StubScreen';
+import { FeedScreen } from '@/features/feed/FeedScreen';
 
+// 3.1 Feed da região: igual ao do usuário, com o aviso de como o próprio lugar aparece.
 export default function RegionFeedScreen() {
-  return <StubScreen title="Feed da região" figma="3.1" phase={4} tab />;
+  return <FeedScreen mode="establishment" />;
 }

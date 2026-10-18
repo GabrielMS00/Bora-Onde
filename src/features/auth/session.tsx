@@ -1,5 +1,5 @@
 import type { Session as SupabaseSession } from '@supabase/supabase-js';
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { supabase } from '@/data/supabase';
 
@@ -13,6 +13,12 @@ type SessionContextValue = {
   /** true até o Supabase restaurar (ou descartar) a sessão salva no aparelho. */
   loading: boolean;
   signOut: () => Promise<void>;
+  /**
+   * Executa `fn` mantendo a sessão "oculta" para a navegação até terminar. Usado no cadastro de estabelecimento:
+   * o signUp já cria a sessão, mas o app só deve ir ao feed depois que as fotos subirem (senão o formulário some
+   * no meio do envio e o lugar aparece sem fotos).
+   */
+  withSessionHeld: <T>(fn: () => Promise<T>) => Promise<T>;
 };
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -26,8 +32,9 @@ function toSession(s: SupabaseSession | null): Session | null {
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
+  const [realSession, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [held, setHeld] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -43,7 +50,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, []);
 
-  const value = useMemo(() => ({ session, loading, signOut }), [session, loading]);
+  const withSessionHeld = useCallback(async <T,>(fn: () => Promise<T>): Promise<T> => {
+    setHeld(true);
+    try {
+      return await fn();
+    } finally {
+      setHeld(false);
+    }
+  }, []);
+
+  const session = held ? null : realSession;
+  const value = useMemo(() => ({ session, loading, signOut, withSessionHeld }), [session, loading, withSessionHeld]);
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 

@@ -1,6 +1,10 @@
 import type { AuthError } from '@supabase/supabase-js';
 
+import { updateMyPlace } from '@/data/api/placesApi';
+import { uploadPhoto } from '@/data/api/storageApi';
 import { supabase } from '@/data/supabase';
+import type { SignupEstablishmentForm } from '@/features/establishment/schemas';
+import type { PickedImage } from '@/lib/image';
 
 import type { SignupUserForm } from './schemas';
 
@@ -27,6 +31,54 @@ export async function signIn(email: string, password: string) {
 
 export async function signOut() {
   await supabase.auth.signOut();
+}
+
+/**
+ * Cadastro de Estabelecimento. Como no usuário, o trigger cria o lugar (public.establishments) a partir dos
+ * metadados; depois do signUp já há sessão, então enviamos as fotos para `{uid}/…` e gravamos os paths.
+ * Devolve `photosFailed` se a conta foi criada mas o envio das fotos falhou (o dono refaz em "Perfil do local").
+ */
+export async function registerEstablishment(form: SignupEstablishmentForm, photos: PickedImage[]) {
+  const { data, error } = await supabase.auth.signUp({
+    email: form.email.trim(),
+    password: form.password,
+    options: {
+      data: {
+        role: 'establishment',
+        name: form.name.trim(),
+        cep: form.cep,
+        city: form.city,
+        neighborhood: form.neighborhood.trim(),
+        street: form.street.trim(),
+        number: form.number.trim(),
+      },
+    },
+  });
+  if (error) throw friendly(error, 'Não foi possível cadastrar o estabelecimento. Tente novamente.');
+  if (!data.session || !data.user) {
+    throw new AuthFailure('Cadastro criado, mas o projeto exige confirmação de e-mail. Desative "Confirm email" no Supabase (veja o README).');
+  }
+
+  try {
+    const uid = data.user.id;
+    const { data: place, error: placeError } = await supabase.from('establishments').select('id').eq('owner_id', uid).single();
+    if (placeError) throw placeError;
+
+    const paths: string[] = [];
+    for (const photo of photos) paths.push(await uploadPhoto(uid, photo));
+    await updateMyPlace(place.id, {
+      name: form.name.trim(),
+      cep: form.cep,
+      city: form.city,
+      neighborhood: form.neighborhood.trim(),
+      street: form.street.trim(),
+      number: form.number.trim(),
+      photos: paths,
+    });
+    return { photosFailed: false };
+  } catch {
+    return { photosFailed: true };
+  }
 }
 
 /**

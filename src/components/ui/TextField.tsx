@@ -57,7 +57,8 @@ export function TextField({
           cursorColor={colors.texto}
           selectionColor={colors.texto}
           // Sem lineHeight no TextInput (desalinha no iOS); família por peso, como no resto do app.
-          className="flex-1 font-dm-regular text-[16px] text-texto"
+          // min-w-0: no web o input tem largura intrínseca (~170 px) e, sem isso, vaza de campos estreitos (ex.: Número).
+          className="min-w-0 flex-1 font-dm-regular text-[16px] text-texto"
           style={{ paddingVertical: 0, outlineStyle: 'none' } as never}
           onFocus={(e) => {
             setFocused(true);

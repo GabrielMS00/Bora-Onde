@@ -6,6 +6,8 @@ const email = z.string().trim().min(1, 'Informe seu e-mail.').pipe(z.email('Info
 const password = z.string().min(8, 'A senha precisa ter ao menos 8 caracteres.');
 const city = z.string().min(1, 'Escolha sua cidade.').refine((v) => (CITIES as readonly string[]).includes(v), 'Escolha uma cidade da lista.');
 
+export { city as cityField, email as emailField, password as passwordField };
+
 export const loginSchema = z.object({
   email,
   // No login só exigimos que exista; a regra de tamanho vale no cadastro.
