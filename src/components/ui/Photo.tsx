@@ -1,0 +1,80 @@
+import { Image } from 'expo-image';
+import { Image as ImageIcon, Plus, X } from 'phosphor-react-native';
+import { Pressable, View } from 'react-native';
+
+import { colors, shadows } from '@/theme/tokens';
+
+import { Text } from './Text';
+
+// Figma › Foto: molduras nos formatos do manual — 4:5 no card do feed, 3:2 no resultado da Indicação e 1:1 nas
+// miniaturas. Sem imagem, mostra o placeholder (superfície-alt + ícone).
+
+export type PhotoRatio = '4:5' | '3:2' | '1:1';
+const ratios: Record<PhotoRatio, number> = { '4:5': 4 / 5, '3:2': 3 / 2, '1:1': 1 };
+
+type FrameProps = {
+  uri?: string;
+  ratio?: PhotoRatio;
+  className?: string;
+  accessibilityLabel?: string;
+};
+
+export function PhotoFrame({ uri, ratio = '4:5', className, accessibilityLabel }: FrameProps) {
+  return (
+    <View className={`w-full items-center justify-center overflow-hidden bg-superficie-alt ${className ?? ''}`} style={{ aspectRatio: ratios[ratio] }}>
+      {uri ? (
+        <Image
+          source={{ uri }}
+          contentFit="cover"
+          transition={200}
+          style={{ width: '100%', height: '100%' }}
+          accessibilityLabel={accessibilityLabel}
+        />
+      ) : (
+        <ImageIcon size={24} color={colors['texto-secundario']} />
+      )}
+    </View>
+  );
+}
+
+type ThumbProps = {
+  uri?: string;
+  size?: number;
+  /** Mostra o X de remoção (22 px, canto superior direito). */
+  onRemove?: () => void;
+};
+
+/** Miniatura 1:1 (96 px) com botão opcional de remover. */
+export function PhotoThumb({ uri, size = 96, onRemove }: ThumbProps) {
+  return (
+    <View style={{ width: size, height: size }} className="overflow-hidden rounded-md bg-superficie-alt">
+      {uri ? <Image source={{ uri }} contentFit="cover" transition={200} style={{ width: size, height: size }} /> : null}
+      {onRemove ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Remover foto"
+          hitSlop={8}
+          onPress={onRemove}
+          className="absolute right-[6px] top-[6px] h-[22px] w-[22px] items-center justify-center rounded-pilula bg-superficie"
+          style={{ boxShadow: shadows['sombra-1'] }}>
+          <X size={12} weight="bold" color={colors.texto} />
+        </Pressable>
+      ) : null}
+    </View>
+  );
+}
+
+/** Tile "Adicionar" (96 px, borda tracejada) que abre o seletor de imagens. */
+export function AddPhotoTile({ onPress, size = 96, label = 'Adicionar' }: { onPress: () => void; size?: number; label?: string }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Adicionar fotos"
+      onPress={onPress}
+      style={{ width: size, height: size, borderStyle: 'dashed' }}
+      className="items-center justify-center gap-1 rounded-md border-[1.5px] border-linha-controle bg-superficie active:bg-superficie-alt">
+      <Plus size={24} color={colors.texto} />
+      <Text variant="legenda">{label}</Text>
+    </Pressable>
+  );
+}

@@ -7,7 +7,8 @@ import { typography, type TextVariant } from '@/theme/typography';
 const tones = {
   texto: 'text-texto',
   secundario: 'text-texto-secundario',
-  inverso: 'text-superficie',
+  'sobre-acento': 'text-sobre-acento',
+  'sobre-erro': 'text-sobre-erro',
   fundo: 'text-fundo',
   erro: 'text-erro',
   sucesso: 'text-sucesso',
