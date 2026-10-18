@@ -16,17 +16,19 @@ type Props = {
   padded?: boolean;
   /** Reserva a área segura inferior (use `false` em telas dentro da barra de abas, que já a reserva). */
   safeBottom?: boolean;
+  /** "pedra" (superfície-alt) é o fundo das telas de Indicação; os chips de Indicação só vivem sobre ele. */
+  background?: 'fundo' | 'pedra';
   className?: string;
 };
 
 // Contêiner de tela: fundo, área segura superior (barra de status) e margem lateral de 20 px do design system.
-export function Screen({ children, scroll = true, header, footer, padded = true, safeBottom = true, className }: Props) {
+export function Screen({ children, scroll = true, header, footer, padded = true, safeBottom = true, background = 'fundo', className }: Props) {
   const insets = useSafeAreaInsets();
   const px = padded ? layout.margem : 0;
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-fundo"
+      className={`flex-1 ${background === 'pedra' ? 'bg-superficie-alt' : 'bg-fundo'}`}
       style={{ paddingTop: insets.top }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {header}
