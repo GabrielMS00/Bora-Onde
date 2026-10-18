@@ -15,7 +15,14 @@ SplashScreen.preventAutoHideAsync();
 // Cada papel só enxerga o seu grupo de rotas. Ao entrar/sair, o router remove o histórico do grupo que perdeu
 // o acesso e cai no `index`, que redireciona conforme a sessão.
 function Routes() {
-  const { session } = useSession();
+  const { session, loading } = useSession();
+
+  // A splash só some quando fontes E sessão estão prontas (evita piscar o login para quem já está logado).
+  useEffect(() => {
+    if (!loading) SplashScreen.hideAsync();
+  }, [loading]);
+
+  if (loading) return null;
 
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.fundo } }}>
@@ -38,10 +45,6 @@ function Routes() {
 
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useAppFonts();
-
-  useEffect(() => {
-    if (fontsLoaded || fontsError) SplashScreen.hideAsync();
-  }, [fontsLoaded, fontsError]);
 
   if (!fontsLoaded && !fontsError) return null;
 

@@ -38,13 +38,18 @@ export function formatMeta(place: Place): string {
 
 export type PlaceTag = { label: string; type?: PlaceType };
 
-/** Até 3 tags: tipo, depois vibes, depois álcool. Vazio se o lugar ainda não tem Dados Extras. */
+/**
+ * Até 3 tags: tipo, primeira vibe, álcool, demais vibes (assim "Bar · #ComAmigos · #ComÁlcool", como no Figma,
+ * mesmo quando o lugar tem mais de uma vibe). Vazio se o lugar ainda não tem Dados Extras.
+ */
 export function placeTags(place: Place): PlaceTag[] {
   const meta = place.metadata;
   if (!meta) return [];
+  const [firstVibe, ...otherVibes] = meta.vibes;
   const tags: PlaceTag[] = [];
   if (meta.type) tags.push({ label: placeTypeLabel[meta.type], type: meta.type });
-  for (const vibe of meta.vibes) tags.push({ label: vibeTag[vibe] });
+  if (firstVibe) tags.push({ label: vibeTag[firstVibe] });
   if (meta.sellsAlcohol) tags.push({ label: '#ComÁlcool' });
+  for (const vibe of otherVibes) tags.push({ label: vibeTag[vibe] });
   return tags.slice(0, 3);
 }

@@ -58,6 +58,7 @@ export function Segmented<T extends string>({ options, value, onChange }: Segmen
           <Pressable
             key={option.value}
             accessibilityRole="radio"
+            accessibilityLabel={option.label}
             accessibilityState={{ checked: selected }}
             onPress={() => onChange(option.value)}
             className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-sm"
@@ -86,6 +87,7 @@ export function ListOption({ label, type = 'checkbox', selected = false, onPress
   return (
     <Pressable
       accessibilityRole={type === 'checkbox' ? 'checkbox' : 'radio'}
+      accessibilityLabel={label}
       accessibilityState={{ checked: selected }}
       onPress={onPress}
       className="h-[52px] flex-row items-center justify-between gap-3 px-4 active:bg-superficie-alt">

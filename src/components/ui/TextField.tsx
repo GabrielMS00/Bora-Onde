@@ -13,6 +13,8 @@ import { Text } from './Text';
 type Props = Omit<TextInputProps, 'style' | 'placeholderTextColor'> & {
   label: string;
   error?: string;
+  /** Texto de apoio abaixo da caixa (some quando há erro), ex.: "Mínimo de 8 caracteres". */
+  hint?: string;
   /** Ícone funcional à esquerda (ex.: lupa na busca). */
   leftIcon?: Icon;
   /** Tipo senha: oculta o texto e mostra o botão "mostrar". */
@@ -23,6 +25,7 @@ type Props = Omit<TextInputProps, 'style' | 'placeholderTextColor'> & {
 export function TextField({
   label,
   error,
+  hint,
   leftIcon: LeftIcon,
   password = false,
   onFocus,
@@ -87,6 +90,10 @@ export function TextField({
             {error}
           </Text>
         </View>
+      ) : hint ? (
+        <Text variant="corpo-sm" tone="secundario" className="-mt-1">
+          {hint}
+        </Text>
       ) : null}
     </View>
   );

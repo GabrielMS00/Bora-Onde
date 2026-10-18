@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { layout } from '@/theme/tokens';
@@ -25,7 +25,10 @@ export function Screen({ children, scroll = true, header, footer, padded = true,
   const px = padded ? layout.margem : 0;
 
   return (
-    <View className="flex-1 bg-fundo" style={{ paddingTop: insets.top }}>
+    <KeyboardAvoidingView
+      className="flex-1 bg-fundo"
+      style={{ paddingTop: insets.top }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {header}
       {scroll ? (
         <ScrollView
@@ -47,6 +50,6 @@ export function Screen({ children, scroll = true, header, footer, padded = true,
       ) : safeBottom ? (
         <View style={{ height: insets.bottom }} />
       ) : null}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
