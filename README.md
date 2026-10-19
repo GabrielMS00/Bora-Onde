@@ -1,36 +1,30 @@
 # Bora Onde
 
-App mobile que resolve a pergunta "**bora onde?**": centraliza restaurantes, cafeterias e bares em um feed por cidade
-(estilo Instagram) e, com um **Questionário de Indicação** de 3 perguntas, recomenda o lugar certo para o momento.
-Projeto de portfólio — os estabelecimentos são fictícios.
+Na dúvida de onde ir comer ou beber? O **Bora Onde** mostra restaurantes, cafeterias e bares da sua cidade e, depois
+de 3 perguntas rápidas, indica o lugar certo para o seu momento.
+
+É um projeto de portfólio, e os estabelecimentos são fictícios.
 
 <p align="center"><img src="docs/demo.gif" alt="Demonstração do app" width="260"></p>
 
-| Feed da cidade | Filtro rápido | Questionário |
-|---|---|---|
-| <img src="docs/screens/02-feed.jpg" width="220"> | <img src="docs/screens/03-filtro-bar.jpg" width="220"> | <img src="docs/screens/04-questionario.jpg" width="220"> |
-| **Indicação** | **Perfil do usuário** | **Feed do estabelecimento** |
-| <img src="docs/screens/05-resultado.jpg" width="220"> | <img src="docs/screens/07-perfil.jpg" width="220"> | <img src="docs/screens/08-dono-feed.jpg" width="220"> |
-| **Dados para indicação** | **Perfil do local** | **Login** |
-| <img src="docs/screens/09-dono-dados-extras.jpg" width="220"> | <img src="docs/screens/10-dono-perfil.jpg" width="220"> | <img src="docs/screens/01-login.jpg" width="220"> |
+## O que dá para fazer
 
-## O que o app faz
+**Como usuário**
+- Criar uma conta e ver os lugares da sua cidade, em um feed com fotos.
+- Filtrar por tipo (restaurante, cafeteria, bar), ambiente e venda de bebida alcoólica.
+- Responder ao questionário e receber uma indicação. Se não gostar, é só pedir outra.
+- Trocar a cidade do perfil, sair ou excluir a conta.
 
-**Dois perfis de conta**
+**Como estabelecimento**
+- Cadastrar o local com fotos e endereço.
+- Ver como o seu lugar aparece no feed.
+- Dizer qual é o tipo, o ambiente e se vende bebida alcoólica. É isso que decide quando o local é indicado.
+- Editar fotos e dados, ou excluir a conta.
 
-- **Usuário padrão** — cadastra-se (nome, idade, sexo, cidade), navega pelo feed da sua cidade, filtra por tipo,
-  ambiente e venda de álcool, responde ao questionário e recebe uma indicação ("Tentar outra" mostra o próximo
-  candidato). Só a cidade é editável; pode sair ou excluir a conta.
-- **Estabelecimento** — cadastra o local com fotos e endereço, vê o feed da região (com um aviso de como o próprio
-  lugar aparece), define **tipo, ambiente e venda de álcool** (os "Dados extras" que alimentam as indicações),
-  gerencia fotos e dados, e pode excluir a conta (apaga lugar, fotos e login).
-
-**Como a indicação funciona** (`src/features/recommendation/engine.ts`, função pura com testes):
-
-1. *Filtros duros*: tipo de lugar (se não for "tanto faz") e venda de álcool (se for requisito).
-2. *Critério suave*: quem atende à vibe escolhida (familiar, com amigos, romântico) vem primeiro.
-3. Empate pelo nome — o resultado é determinístico. "Tentar outra indicação" acumula os já mostrados; sem mais
-   candidatos o botão vira "Refazer o questionário". Lugares sem Dados extras não entram.
+**Como a indicação escolhe o lugar**
+1. Só entram lugares do tipo escolhido e, se você precisa de bebida alcoólica, que vendam.
+2. Quem combina com a vibe (familiar, com amigos ou romântico) aparece primeiro.
+3. Em caso de empate, vale a ordem alfabética.
 
 ## Stack
 
@@ -39,22 +33,6 @@ Projeto de portfólio — os estabelecimentos são fictícios.
 - **Supabase**: Postgres, Auth e Storage, com **Row Level Security**
 - TanStack Query, React Hook Form + Zod, expo-image / expo-image-picker, Phosphor Icons
 - Jest (motor de indicação e filtros)
-
-## Decisões de arquitetura
-
-- **RLS como fronteira de segurança.** O papel (usuário/estabelecimento) vem do cadastro e só escolhe o fluxo de
-  telas; o banco decide o que cada um lê e escreve. Dados pessoais são somente leitura (`grant update (city)`),
-  cada dono só altera o próprio lugar e só escreve na própria pasta do Storage. `npm run check:rls` prova isso com
-  contas reais.
-- **Perfil criado por trigger** a partir dos metadados do cadastro — atômico, sem corrida entre sessão e perfil.
-- **Exclusão de conta** por função `security definer` (`delete_my_account`) com `on delete cascade`; o app apaga
-  antes as fotos do Storage.
-- **Motor de indicação no cliente**, como função pura: com poucas dezenas de lugares por cidade, uma RPC só
-  complicaria. Fica fácil de testar.
-- **"Esqueci minha senha" é só interface** (decisão de escopo): valida o e-mail e mostra o modal do protótipo, sem
-  enviar nada e sem revelar se a conta existe. Um fluxo real exigiria deep link e uma tela de nova senha.
-- **Design fiel ao Figma**: tokens (cores, tipografia, raios, sombras) extraídos do arquivo; telas e estados que o
-  Figma não desenha (vazio, erro, carregando, painéis de seleção) foram criados com os mesmos componentes.
 
 ## Rodar o projeto
 
@@ -92,7 +70,7 @@ npx expo start
 
 Escaneie o QR code com o **Expo Go** (celular na mesma rede Wi-Fi) ou pressione `w` para a versão web.
 
-**Contas demo** (senha `demo12345`): `ana@boraonde.demo` (usuário, Campinas) e `bardoze@boraonde.demo`
+**Contas demo** (senha `demo12345`): `ana@boraonde.demo` (usuário, Brasília) e `bardoze@boraonde.demo`
 (dono do Bar do Zé). A tela de login tem os atalhos "Entrar como … demo".
 
 Para ver o UI Kit: rotas ocultas `/dev/kit` (tokens) e `/dev/components` (componentes e estados).
@@ -120,19 +98,10 @@ scripts/            seed.mjs e check-rls.mjs
 
 ## Notas
 
-- **Plano gratuito do Supabase**: projetos sem uso por cerca de uma semana são pausados (restaure no painel; os dados
-  ficam). O workflow `.github/workflows/supabase-keepalive.yml` faz uma consulta leve a cada 3 dias — basta
-  cadastrar os secrets `SUPABASE_URL` e `SUPABASE_KEY` no repositório.
-- **Cache de imagens**: as fotos do seed são enviadas com o hash do conteúdo no nome
-  (`seed/bar-do-ze-1-a1b2c3d4.jpg`). O `expo-image` guarda imagens em disco *pela URL*; trocar a foto no mesmo caminho
-  deixaria o app mostrando a antiga. Com o hash, a URL muda junto com a foto. O `npm run seed` remove os arquivos
-  antigos do bucket.
-- **Expo Go**: o projeto usa o SDK 57 porque é o que o Expo Go da App Store suportava ao desenvolvê-lo.
-- **Ícones**: o `phosphor-react-native` entra inteiro no bundle (módulos carregados sob demanda); trocar por imports
-  individuais foi avaliado e não compensou neste escopo.
-
-## Créditos
-
-Fotos de demonstração de [Unsplash](https://unsplash.com/license) e [Pexels](https://www.pexels.com/license/),
-de uso gratuito — lista completa de fotógrafos em [`supabase/seed-assets/CREDITS.md`](supabase/seed-assets/CREDITS.md).
-Design, logotipo e UI Kit: arquivo Figma do projeto (wireframe e protótipo de alta fidelidade).
+- **"Esqueci minha senha" é só visual.** Ele mostra a mensagem de envio, mas não manda e-mail de verdade.
+- **O Supabase gratuito pausa projetos parados.** Se isso acontecer, é só reativar no painel. O arquivo
+  `.github/workflows/supabase-keepalive.yml` evita a pausa, mas só funciona depois de cadastrar `SUPABASE_URL` e
+  `SUPABASE_KEY` nos *secrets* do repositório.
+- **Versão do Expo.** O projeto usa o SDK 57, que é o que o Expo Go da App Store aceitava quando foi feito.
+- **Trocou uma foto de exemplo?** Rode `npm run seed` de novo. Os nomes das fotos mudam junto com a imagem, para o app
+  não continuar mostrando a antiga.
