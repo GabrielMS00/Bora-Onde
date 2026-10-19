@@ -18,7 +18,6 @@ const GENDERS = [
   { value: 'M', label: 'Masculino' },
 ] as const;
 
-// 1.3 Cadastro de usuário. Ao concluir, a sessão muda e o guard leva ao feed da cidade escolhida.
 export default function SignupUserScreen() {
   const toast = useToast();
   const {

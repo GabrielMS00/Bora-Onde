@@ -14,8 +14,6 @@ export type ButtonVariant =
   | 'destrutivo-suave';
 export type ButtonSize = 'grande' | 'medio';
 
-// Figma › Botão: 52 px (grande, CTA de rodapé) ou 44 px (médio), raio-md, ícone de 20 px a 8 px do texto.
-// Pressionado: acento-pressionado; desabilitado: 40%. Primário = CTA (um por tela); destrutivo só dentro do modal.
 const container: Record<ButtonVariant, string> = {
   primario: 'bg-acento active:bg-acento-pressionado',
   secundario: 'bg-superficie-alt active:bg-acento-suave',
@@ -54,7 +52,6 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   size?: ButtonSize;
   icon?: Icon;
   loading?: boolean;
-  /** Ocupa a largura do container (padrão, como nos CTAs de rodapé). `false` ajusta ao conteúdo. */
   fullWidth?: boolean;
 };
 

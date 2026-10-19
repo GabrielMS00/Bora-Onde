@@ -6,9 +6,6 @@ import { shadows } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Painel inferior para seleções (filtro "Ambiente", Cidade). Não existe no Figma: montado com os tokens do kit
-// (superfície, raio-xl, véu de 40%, título em h3) para ficar coerente com o Modal de confirmação.
-
 type Props = {
   visible: boolean;
   title: string;

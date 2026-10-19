@@ -15,7 +15,6 @@ import { DEMO_ACCOUNTS } from '@/features/auth/demo';
 import { loginSchema, type LoginForm } from '@/features/auth/schemas';
 import { colors } from '@/theme/tokens';
 
-// 1.1 Login. Ao entrar, a sessão muda e o guard do layout raiz leva ao fluxo do papel (feed do usuário / da região).
 export default function LoginScreen() {
   const toast = useToast();
   const {
@@ -103,7 +102,6 @@ export default function LoginScreen() {
         <Button label="Criar nova conta" variant="contorno" onPress={() => router.push('/account-type')} />
       </View>
 
-      {/* Substitui o "atalho do protótipo" do Figma: entra direto com uma conta de demonstração. */}
       <View className="items-center gap-2 pb-2 pt-8">
         <View className="flex-row items-center gap-1">
           <Flask size={14} color={colors['texto-secundario']} />

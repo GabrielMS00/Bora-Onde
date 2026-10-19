@@ -8,14 +8,12 @@ import type { PickedImage } from '@/lib/image';
 
 import type { SignupUserForm } from './schemas';
 
-/** Erro com mensagem já pronta para o usuário (em português). */
 export class AuthFailure extends Error {}
 
 function friendly(error: AuthError, fallback: string): AuthFailure {
   const msg = error.message.toLowerCase();
   if (msg.includes('invalid login credentials')) return new AuthFailure('E-mail ou senha incorretos.');
   if (msg.includes('already registered') || msg.includes('already been registered')) return new AuthFailure('Este e-mail já está cadastrado.');
-  // "email rate limit" = o projeto está tentando enviar e-mail de confirmação (SMTP embutido tem limite baixo).
   if (error.code === 'over_email_send_rate_limit' || msg.includes('email rate limit')) {
     return new AuthFailure('Limite de e-mails do projeto atingido. Desative "Confirm email" no Supabase (veja o README) ou tente mais tarde.');
   }
@@ -33,11 +31,6 @@ export async function signOut() {
   await supabase.auth.signOut();
 }
 
-/**
- * Cadastro de Estabelecimento. Como no usuário, o trigger cria o lugar (public.establishments) a partir dos
- * metadados; depois do signUp já há sessão, então enviamos as fotos para `{uid}/…` e gravamos os paths.
- * Devolve `photosFailed` se a conta foi criada mas o envio das fotos falhou (o dono refaz em "Perfil do local").
- */
 export async function registerEstablishment(form: SignupEstablishmentForm, photos: PickedImage[]) {
   const { data, error } = await supabase.auth.signUp({
     email: form.email.trim(),
@@ -81,10 +74,6 @@ export async function registerEstablishment(form: SignupEstablishmentForm, photo
   }
 }
 
-/**
- * Cadastro de Usuário Padrão. O perfil (public.users) é criado por trigger no banco a partir destes metadados,
- * na mesma transação do auth.users — por isso não há inserção separada aqui.
- */
 export async function registerUser(form: SignupUserForm) {
   const { data, error } = await supabase.auth.signUp({
     email: form.email.trim(),
@@ -94,7 +83,6 @@ export async function registerUser(form: SignupUserForm) {
     },
   });
   if (error) throw friendly(error, 'Não foi possível criar a conta. Tente novamente.');
-  // Com "Confirm email" ligado o signUp não devolve sessão: o app ficaria parado. É config do projeto, não do usuário.
   if (!data.session) {
     throw new AuthFailure('Cadastro criado, mas o projeto exige confirmação de e-mail. Desative "Confirm email" no Supabase (veja o README).');
   }

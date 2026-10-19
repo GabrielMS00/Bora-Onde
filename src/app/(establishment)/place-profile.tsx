@@ -22,8 +22,6 @@ import { placeFieldsSchema, type PlaceFieldsForm } from '@/features/establishmen
 import { useMyPlace } from '@/features/establishment/useMyPlace';
 import { formatCep } from '@/lib/place';
 
-// 3.3 Perfil do local: fotos (a 1ª é a capa), dados do local, sair e excluir a conta do estabelecimento.
-
 const toItems = (paths: string[]): PhotoItem[] => paths.map((path) => ({ key: path, uri: photoUrl(path), path }));
 
 function ProfileForm({ place }: { place: Place }) {
@@ -60,7 +58,6 @@ function ProfileForm({ place }: { place: Place }) {
     setPhotosError(undefined);
     const uid = session!.accountId;
     try {
-      // 1) envia as novas, 2) grava a lista final (ordem = capa primeiro), 3) só então apaga as removidas.
       const finalPaths: string[] = [];
       for (const item of photos) {
         finalPaths.push(item.path ?? (await uploadPhoto(uid, { uri: item.uri, mimeType: item.mimeType })));
@@ -85,7 +82,6 @@ function ProfileForm({ place }: { place: Place }) {
       await deleteMyAccount(session!.accountId);
       queryClient.invalidateQueries({ queryKey: ['places'] });
       toast.show('success', 'Conta excluída.');
-      // A sessão local foi encerrada: o guard devolve ao login.
     } catch {
       setDeleting(false);
       setConfirmDelete(false);

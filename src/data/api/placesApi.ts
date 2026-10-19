@@ -13,7 +13,6 @@ type PlaceRow = {
   neighborhood: string;
   street: string;
   number: string;
-  // 1:1 (PK = FK): o PostgREST devolve objeto ou null; aceitamos array por garantia.
   establishment_metadata: MetadataRow | MetadataRow[] | null;
 };
 
@@ -29,14 +28,12 @@ function toPlace(row: PlaceRow): Place {
   return { ...rest, metadata };
 }
 
-/** Lugares da cidade, em ordem alfabética (mesma ordem do Figma). `photos` traz os paths do Storage. */
 export async function fetchPlacesByCity(city: string): Promise<Place[]> {
   const { data, error } = await supabase.from('establishments').select(COLUMNS).eq('city', city).order('name');
   if (error) throw new Error(error.message);
   return (data as unknown as PlaceRow[]).map(toPlace);
 }
 
-/** O lugar do estabelecimento logado. */
 export async function fetchMyPlace(ownerId: string): Promise<Place> {
   const { data, error } = await supabase.from('establishments').select(COLUMNS).eq('owner_id', ownerId).single();
   if (error) throw new Error(error.message);
@@ -61,11 +58,9 @@ export async function saveMetadata(placeId: string, meta: { type: PlaceType; vib
   if (error) throw new Error(error.message);
 }
 
-/** Exclusão definitiva: apaga as fotos do dono e chama a RPC que remove auth.users (cascade limpa o resto). */
 export async function deleteMyAccount(uid: string) {
   await removeAllMyPhotos(uid);
   const { error } = await supabase.rpc('delete_my_account');
   if (error) throw new Error(error.message);
-  // A conta já não existe: encerra só a sessão local (sem chamar o servidor).
   await supabase.auth.signOut({ scope: 'local' });
 }

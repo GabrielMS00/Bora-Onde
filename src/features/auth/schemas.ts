@@ -10,7 +10,6 @@ export { city as cityField, email as emailField, password as passwordField };
 
 export const loginSchema = z.object({
   email,
-  // No login só exigimos que exista; a regra de tamanho vale no cadastro.
   password: z.string().min(1, 'Informe sua senha.'),
 });
 
@@ -18,7 +17,6 @@ export const forgotPasswordSchema = z.object({ email });
 
 export const signupUserSchema = z.object({
   name: z.string().trim().min(3, 'Informe seu nome completo.').max(120, 'O nome é muito longo.'),
-  // Campo de texto: guardamos como string e validamos a faixa (o app lida com bebida alcoólica → 18+).
   age: z
     .string()
     .min(1, 'Informe sua idade.')

@@ -6,10 +6,8 @@ import { colors } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Figma › Cabeçalho: voltar (44×44) + título centralizado, 52 px de altura.
 type Props = {
   title: string;
-  /** Padrão: router.back(). */
   onBack?: () => void;
 };
 

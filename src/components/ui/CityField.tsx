@@ -13,7 +13,6 @@ type Props = {
   label?: string;
 };
 
-/** Campo "Cidade" (tipo Local do kit): abre o BottomSheet com a lista fixa de cidades. */
 export function CityField({ value, onChange, error, label = 'Cidade' }: Props) {
   const [open, setOpen] = useState(false);
 

@@ -33,7 +33,7 @@ create table if not exists public.establishments (
 );
 create index if not exists establishments_city_idx on public.establishments (city);
 
--- Dados Extras (tela 3.2): alimentam o motor de indicação.
+-- Dados Extras: alimentam o motor de indicação.
 create table if not exists public.establishment_metadata (
   establishment_id uuid primary key references public.establishments (id) on delete cascade,
   type             public.place_type,

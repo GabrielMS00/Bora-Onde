@@ -14,8 +14,6 @@ import { TextField } from '@/components/ui/TextField';
 import { forgotPasswordSchema, type ForgotPasswordForm } from '@/features/auth/schemas';
 import { colors } from '@/theme/tokens';
 
-// 1.5 Recuperar senha — SOMENTE UI (decisão do projeto): valida o e-mail e mostra o modal 1.5s, sem enviar nada.
-// A mensagem é a mesma exista ou não a conta, para não revelar quais e-mails estão cadastrados.
 export default function ForgotPasswordScreen() {
   const [sentTo, setSentTo] = useState<string | null>(null);
   const { control, handleSubmit } = useForm<ForgotPasswordForm>({

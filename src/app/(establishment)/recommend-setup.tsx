@@ -14,8 +14,6 @@ import { saveMetadata } from '@/data/api/placesApi';
 import type { Place, PlaceType, Vibe } from '@/data/types';
 import { useMyPlace } from '@/features/establishment/useMyPlace';
 
-// 3.2 Dados extras para indicação: tipo, ambiente e venda de álcool alimentam o motor de indicação (Fase 5).
-
 const TYPES: { type: PlaceType; label: string; icon: typeof Wine }[] = [
   { type: 'restaurant', label: 'Restaurante', icon: ForkKnife },
   { type: 'cafe', label: 'Cafeteria', icon: Coffee },

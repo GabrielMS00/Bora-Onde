@@ -17,7 +17,6 @@ import { PhotoManager, type PhotoItem } from '@/features/establishment/PhotoMana
 import { signupEstablishmentSchema, type SignupEstablishmentForm } from '@/features/establishment/schemas';
 import { formatCep } from '@/lib/place';
 
-// 1.4 Cadastro de estabelecimento. Ao concluir a sessão muda e o guard leva ao feed da região.
 export default function SignupEstablishmentScreen() {
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -41,8 +40,6 @@ export default function SignupEstablishmentScreen() {
     }
     setPhotosError(undefined);
     try {
-      // A sessão fica retida até as fotos subirem: o formulário continua na tela (botão em carregamento) e o
-      // feed já abre com o lugar completo.
       const { photosFailed } = await withSessionHeld(async () => {
         const result = await registerEstablishment(form, photos);
         await queryClient.invalidateQueries({ queryKey: ['places'] });

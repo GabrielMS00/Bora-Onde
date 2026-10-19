@@ -10,8 +10,6 @@ import { Text } from '@/components/ui/Text';
 import type { QuizAnswers } from '@/features/recommendation/engine';
 import { colors } from '@/theme/tokens';
 
-// 2.2 Questionário de indicação: 3 perguntas rápidas → resultado (2.3). Fundo "Pedra", chips de Indicação (48 px).
-
 type Option<T extends string> = { value: T; label: string; icon?: Icon };
 
 const TYPE_OPTIONS: Option<QuizAnswers['type']>[] = [
@@ -46,7 +44,6 @@ function Question({ number, title, children }: { number: number; title: string; 
   );
 }
 
-// Tocar de novo na opção marcada desmarca a resposta (volta a `undefined`).
 function Options<T extends string>({ options, value, onChange }: { options: Option<T>[]; value: T | undefined; onChange: (v: T | undefined) => void }) {
   return options.map((o) => (
     <Chip

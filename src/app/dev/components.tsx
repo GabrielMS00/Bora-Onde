@@ -19,8 +19,6 @@ import { TextField } from '@/components/ui/TextField';
 import { useToast } from '@/components/ui/Toast';
 import type { Place } from '@/data/types';
 
-// Rota de desenvolvimento: galeria de todos os componentes do UI Kit Hi-Fi, com seus estados.
-
 const swatch = (color: string) =>
   `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><rect width="400" height="500" fill="${color}"/></svg>`)}`;
 

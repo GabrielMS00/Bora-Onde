@@ -7,9 +7,6 @@ import { colors, shadows } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Figma › Foto: molduras nos formatos do manual — 4:5 no card do feed, 3:2 no resultado da Indicação e 1:1 nas
-// miniaturas. Sem imagem, mostra o placeholder (superfície-alt + ícone).
-
 export type PhotoRatio = '4:5' | '3:2' | '1:1';
 const ratios: Record<PhotoRatio, number> = { '4:5': 4 / 5, '3:2': 3 / 2, '1:1': 1 };
 
@@ -21,7 +18,6 @@ type FrameProps = {
 };
 
 export function PhotoFrame({ uri, ratio = '4:5', className, accessibilityLabel }: FrameProps) {
-  // Se a imagem falhar (rede, URL quebrada), mostra o placeholder em vez de um quadro vazio.
   const [failedUri, setFailedUri] = useState<string>();
   return (
     <View className={`w-full items-center justify-center overflow-hidden bg-superficie-alt ${className ?? ''}`} style={{ aspectRatio: ratios[ratio] }}>
@@ -44,11 +40,9 @@ export function PhotoFrame({ uri, ratio = '4:5', className, accessibilityLabel }
 type ThumbProps = {
   uri?: string;
   size?: number;
-  /** Mostra o X de remoção (22 px, canto superior direito). */
   onRemove?: () => void;
 };
 
-/** Miniatura 1:1 (96 px) com botão opcional de remover. */
 export function PhotoThumb({ uri, size = 96, onRemove }: ThumbProps) {
   const [failedUri, setFailedUri] = useState<string>();
   return (
@@ -73,7 +67,6 @@ export function PhotoThumb({ uri, size = 96, onRemove }: ThumbProps) {
   );
 }
 
-/** Tile "Adicionar" (96 px, borda tracejada) que abre o seletor de imagens. */
 export function AddPhotoTile({ onPress, size = 96, label = 'Adicionar' }: { onPress: () => void; size?: number; label?: string }) {
   return (
     <Pressable

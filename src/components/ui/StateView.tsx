@@ -7,8 +7,6 @@ import { colors } from '@/theme/tokens';
 import { Button } from './Button';
 import { Text } from './Text';
 
-// Estados que o Figma não desenha (vazio, erro, carregando), montados com os tokens e componentes do kit.
-
 type StateProps = {
   title: string;
   message: string;
@@ -45,7 +43,6 @@ export function ErrorState(props: Omit<StateProps, 'title'> & { title?: string }
   return <StateView icon={WarningCircle} tone="erro" title={props.title ?? 'Algo deu errado'} {...props} />;
 }
 
-/** Bloco de carregamento (superfície-alt pulsando). Defina tamanho/raio por className. */
 export function Skeleton({ className }: { className?: string }) {
   const [opacity] = useState(() => new Animated.Value(1));
 

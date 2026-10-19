@@ -1,6 +1,5 @@
 const tokens = require('./src/theme/tokens.json');
 
-// Tudo em px (não rem): o Figma é em px = dp no React Native e a escala base é 4.
 const spacing = {
   px: '1px',
   ...Object.fromEntries(
@@ -10,7 +9,6 @@ const spacing = {
   ),
 };
 
-// letterSpacing no Figma vem em %: px = tamanho × % / 100.
 const fontSize = Object.fromEntries(
   Object.entries(tokens.type).map(([name, t]) => [
     name,
@@ -28,11 +26,8 @@ const fontSize = Object.fromEntries(
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
-  // Só tema Dia: 'class' impede que o NativeWind siga o modo escuro do sistema (e evita o erro de
-  // "set color scheme" no web, onde o css-interop observa o <html>).
   darkMode: 'class',
   theme: {
-    // Substitui (não estende) a paleta/escalas padrão: só existe o que o design system define.
     colors: { transparent: 'transparent', ...tokens.colors },
     spacing,
     borderRadius: {

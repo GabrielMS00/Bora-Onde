@@ -13,12 +13,9 @@ import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
 
-// Cada papel só enxerga o seu grupo de rotas. Ao entrar/sair, o router remove o histórico do grupo que perdeu
-// o acesso e cai no `index`, que redireciona conforme a sessão.
 function Routes() {
   const { session, loading } = useSession();
 
-  // A splash só some quando fontes E sessão estão prontas (evita piscar o login para quem já está logado).
   useEffect(() => {
     if (!loading) SplashScreen.hideAsync();
   }, [loading]);
@@ -37,7 +34,6 @@ function Routes() {
       <Stack.Protected guard={session?.role === 'establishment'}>
         <Stack.Screen name="(establishment)" />
       </Stack.Protected>
-      {/* Rotas de desenvolvimento (UI Kit): fora dos guards. */}
       <Stack.Screen name="dev/kit" />
       <Stack.Screen name="dev/components" />
     </Stack>
@@ -46,7 +42,6 @@ function Routes() {
 
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useAppFonts();
-  // Chaves de consulta pessoais incluem o id da conta; as de lugares são públicas por cidade — não precisa limpar no logout.
   const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } }));
 
   if (!fontsLoaded && !fontsError) return null;

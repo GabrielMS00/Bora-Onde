@@ -5,18 +5,12 @@ export type PickedImage = { uri: string; mimeType?: string };
 
 export type PickResult = {
   images: PickedImage[];
-  /** Quantas fotos foram descartadas por passar do limite do bucket (5 MB). */
   tooLarge: number;
-  /** Permissão de galeria negada (iOS). */
   denied: boolean;
 };
 
-export const MAX_PHOTO_BYTES = 5 * 1024 * 1024; // mesmo limite do bucket place-photos
+export const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 
-/**
- * Abre a galeria (seleção múltipla). Deve ser chamada direto de um toque (exigência da web).
- * No iOS a permissão de biblioteca é pedida antes, para não aparecer só depois da escolha (docs do expo-image-picker).
- */
 export async function pickImages(limit: number): Promise<PickResult> {
   const empty: PickResult = { images: [], tooLarge: 0, denied: false };
   if (limit <= 0) return empty;

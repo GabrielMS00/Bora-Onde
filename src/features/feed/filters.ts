@@ -7,7 +7,6 @@ export const NO_FILTERS: FeedFilters = { type: null, vibe: null, alcohol: false 
 
 export const hasFilters = (f: FeedFilters) => f.type !== null || f.vibe !== null || f.alcohol;
 
-/** AND entre os filtros ativos. Lugar sem Dados Extras só aparece com os filtros zerados. */
 export function filterPlaces(places: Place[], f: FeedFilters): Place[] {
   if (!hasFilters(f)) return places;
   return places.filter((p) => {
@@ -20,7 +19,6 @@ export function filterPlaces(places: Place[], f: FeedFilters): Place[] {
   });
 }
 
-/** "2 lugares do tipo Bar" / "3 lugares" / "1 lugar". */
 export function resultLabel(f: FeedFilters, count: number): string {
   const noun = `${count} ${count === 1 ? 'lugar' : 'lugares'}`;
   return f.type ? `${noun} do tipo ${placeTypeLabel[f.type]}` : noun;

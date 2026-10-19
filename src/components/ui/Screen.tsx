@@ -6,22 +6,15 @@ import { layout } from '@/theme/tokens';
 
 type Props = {
   children: ReactNode;
-  /** Conteúdo rolável (padrão). `false` para telas com layout fixo (ex.: lista própria). */
   scroll?: boolean;
-  /** Cabeçalho/topo fixo, acima do conteúdo (ex.: <ScreenHeader />). */
   header?: ReactNode;
-  /** Rodapé fixo com a ação principal (ex.: CTA 52 px). A área segura inferior é aplicada se `safeBottom`. */
   footer?: ReactNode;
-  /** Aplica a margem lateral de 20 px ao conteúdo. */
   padded?: boolean;
-  /** Reserva a área segura inferior (use `false` em telas dentro da barra de abas, que já a reserva). */
   safeBottom?: boolean;
-  /** "pedra" (superfície-alt) é o fundo das telas de Indicação; os chips de Indicação só vivem sobre ele. */
   background?: 'fundo' | 'pedra';
   className?: string;
 };
 
-// Contêiner de tela: fundo, área segura superior (barra de status) e margem lateral de 20 px do design system.
 export function Screen({ children, scroll = true, header, footer, padded = true, safeBottom = true, background = 'fundo', className }: Props) {
   const insets = useSafeAreaInsets();
   const px = padded ? layout.margem : 0;

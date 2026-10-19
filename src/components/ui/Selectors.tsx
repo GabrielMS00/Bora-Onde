@@ -6,10 +6,6 @@ import { colors, shadows } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Figma › Seletores: substituem rádios e checkboxes do wireframe por controles fáceis de tocar (mín. 44–52 px).
-// Opção em bloco = escolha única com ícone; Segmento = 2–3 opções curtas; Opção de lista = múltipla escolha.
-// Selecionado sempre com check.
-
 type BlockProps = {
   label: string;
   icon: Icon;
@@ -17,7 +13,6 @@ type BlockProps = {
   onPress?: () => void;
 };
 
-/** Opção em bloco (≈107×96). Use dentro de `flex-row gap-2`; ocupa a largura disponível (`flex-1`). */
 export function OptionBlock({ label, icon: IconComponent, selected = false, onPress }: BlockProps) {
   const fg = selected ? colors['sobre-acento'] : colors.texto;
   return (
@@ -48,7 +43,6 @@ type SegmentedProps<T extends string> = {
   onChange: (value: T) => void;
 };
 
-/** Segmento: trilho em superfície-alt; a opção ativa vira uma pílula branca com check. */
 export function Segmented<T extends string>({ options, value, onChange }: SegmentedProps<T>) {
   return (
     <View className="flex-row gap-1 rounded-md bg-superficie-alt p-1" accessibilityRole="radiogroup">
@@ -76,13 +70,11 @@ export function Segmented<T extends string>({ options, value, onChange }: Segmen
 
 type ListOptionProps = {
   label: string;
-  /** checkbox = múltipla escolha; radio = escolha única. */
   type?: 'checkbox' | 'radio';
   selected?: boolean;
   onPress?: () => void;
 };
 
-/** Opção de lista (52 px): rótulo à esquerda, controle à direita. Agrupe com <OptionList>. */
 export function ListOption({ label, type = 'checkbox', selected = false, onPress }: ListOptionProps) {
   return (
     <Pressable
@@ -104,7 +96,6 @@ export function ListOption({ label, type = 'checkbox', selected = false, onPress
   );
 }
 
-/** Contêiner das opções de lista: cartão com divisores entre as linhas. */
 export function OptionList({ children }: { children: ReactNode }) {
   const items = Children.toArray(children);
   return (

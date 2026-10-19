@@ -7,11 +7,6 @@ import { colors } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Figma › Barra de abas: fixa, 64 px + área segura, superfície a 94%, borda no topo. Inativa: ícone Regular +
-// rótulo em texto-secundário. Ativa: ícone Fill + rótulo em texto. A Indicação, no centro, é sempre a pílula
-// Meia-Noite com o sparkle — o atalho para a decisão. (Sem blur: a 94% de opacidade ele é imperceptível e no
-// Android exigiria BlurTargetView.)
-
 export type TabRole = 'user' | 'establishment';
 
 type TabConfig = { route: string; label: string; icon: Icon; center?: boolean };

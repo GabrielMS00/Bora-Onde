@@ -10,16 +10,11 @@ import { Chip } from './Chip';
 import { PhotoFrame } from './Photo';
 import { Text } from './Text';
 
-// Figma › Card do lugar. Feed: foto 4:5 em carrossel (rolagem horizontal) com indicador, nome em h2, metadados,
-// endereço completo e até três tags. Destaque: versão do resultado da Indicação (foto 3:2, raio-xl, sombra-2).
-// Nada de texto sobre a foto. (Preço, "aberto até", distância e salvar ficam fora do escopo.)
-
 const typeIcon: Record<PlaceType, Icon> = { restaurant: ForkKnife, cafe: Coffee, bar: Wine };
 
 type Props = {
   place: Place;
   variant?: 'feed' | 'destaque';
-  /** Linha de apoio do Destaque, ex.: "Combina com o que você pediu". */
   caption?: string;
 };
 
@@ -31,8 +26,6 @@ export function PlaceCard({ place, variant = 'feed', caption }: Props) {
   const [index, setIndex] = useState(0);
   const tags = placeTags(place);
 
-  // A página do carrossel precisa ter exatamente a largura do viewport: medida dentro da borda do card e sem
-  // arredondar, senão cada foto sobra alguns px e a anterior "vaza" para a seguinte a cada página.
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
 
   const address = (

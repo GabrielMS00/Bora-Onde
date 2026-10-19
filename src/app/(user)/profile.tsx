@@ -16,8 +16,6 @@ import { updateMyCity, type UserProfile } from '@/features/profile/profileApi';
 import { useMyUser } from '@/features/profile/useMyUser';
 import { colors } from '@/theme/tokens';
 
-// 2.4 Meu perfil: dados pessoais somente leitura; só a cidade é editável (define o feed e as indicações).
-
 const genderLabel: Record<UserProfile['gender'], string> = { F: 'Feminino', M: 'Masculino', O: 'Outro' };
 
 function initials(name: string) {
@@ -56,7 +54,6 @@ function ProfileView({ user }: { user: UserProfile }) {
     try {
       await deleteMyAccount(user.id);
       toast.show('success', 'Conta excluída.');
-      // Sessão local encerrada: o guard devolve ao login.
     } catch {
       setDeleting(false);
       setConfirmDelete(false);

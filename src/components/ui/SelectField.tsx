@@ -5,8 +5,6 @@ import { colors } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Campo do tipo "Local" do kit (Cidade): mesma caixa do Campo de texto, mas abre uma lista (BottomSheet).
-
 type Props = {
   label: string;
   value?: string;

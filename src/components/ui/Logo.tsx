@@ -1,6 +1,5 @@
 import { Image } from 'expo-image';
 
-// SVGs exportados do Figma (UI Kit › Marca · Logotipo). Proporção = largura/altura do componente no Figma.
 const logos = {
   horizontal: { source: require('../../../assets/brand/logo-horizontal.svg'), ratio: 182.75 / 28 },
   'horizontal-negativo': {
@@ -15,7 +14,6 @@ export type LogoVariant = keyof typeof logos;
 
 type Props = {
   variant?: LogoVariant;
-  /** Altura em dp. Mínimos do manual: horizontal 20, empilhado 56. */
   height?: number;
 };
 

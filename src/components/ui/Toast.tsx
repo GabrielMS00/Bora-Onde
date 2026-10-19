@@ -7,8 +7,6 @@ import { colors, shadows } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Figma › Aviso: flutuante, de sucesso ou erro, sempre com ícone e palavra; some sozinho em 4 s.
-
 type ToastType = 'success' | 'error';
 type ToastState = { id: number; type: ToastType; message: string };
 

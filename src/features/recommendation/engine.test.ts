@@ -16,12 +16,11 @@ const place = (id: string, name: string, metadata?: PlaceMetadata): Place => ({
   metadata,
 });
 
-// Espelha o seed de Brasília.
 const barDoZe = place('bar-do-ze', 'Bar do Zé', { type: 'bar', vibes: ['friends', 'romantic'], sellsAlcohol: true });
 const boteco = place('boteco', 'Boteco Esquina', { type: 'bar', vibes: ['friends'], sellsAlcohol: true });
 const cafe = place('cafe', 'Café Grão Fino', { type: 'cafe', vibes: ['family', 'friends'], sellsAlcohol: false });
 const cantina = place('cantina', 'Cantina da Nonna', { type: 'restaurant', vibes: ['family', 'romantic'], sellsAlcohol: true });
-const all = [cantina, cafe, boteco, barDoZe]; // fora de ordem de propósito
+const all = [cantina, cafe, boteco, barDoZe];
 
 const ids = (list: Place[]) => list.map((p) => p.id);
 const answers = (a: Partial<QuizAnswers> = {}): QuizAnswers => ({ type: 'any', vibe: 'friends', alcohol: 'any', ...a });
@@ -42,7 +41,6 @@ describe('rankPlaces', () => {
   });
 
   it('a vibe é critério suave: quem a atende vem antes, mas os outros continuam candidatos', () => {
-    // vibe "family": café e cantina primeiro; os bares (sem família) depois.
     expect(ids(rankPlaces(all, answers({ vibe: 'family' })))).toEqual(['cafe', 'cantina', 'bar-do-ze', 'boteco']);
   });
 

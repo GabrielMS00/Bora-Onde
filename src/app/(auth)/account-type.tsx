@@ -28,7 +28,6 @@ function AccountOption({ icon: IconComponent, title, description, onPress }: { i
   );
 }
 
-// 1.2 Seleção de tipo de conta.
 export default function AccountTypeScreen() {
   return (
     <Screen header={<ScreenHeader title="Criar conta" />}>

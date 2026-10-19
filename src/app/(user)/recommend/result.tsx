@@ -13,7 +13,6 @@ import { usePlaces } from '@/features/feed/usePlaces';
 import { useMyUser } from '@/features/profile/useMyUser';
 import { describeAnswers, parseAnswers, recommend } from '@/features/recommendation/engine';
 
-// 2.3 Resultado da indicação. As respostas chegam pela rota; "Tentar outra indicação" acumula os já mostrados.
 export default function RecommendResultScreen() {
   const params = useLocalSearchParams<{ type?: string; vibe?: string; alcohol?: string }>();
   const answers = useMemo(() => parseAnswers(params), [params]);
@@ -28,7 +27,6 @@ export default function RecommendResultScreen() {
     [places, answers, excluded, current],
   );
 
-  // URL adulterada ou aberta direto: volta ao questionário.
   if (!answers) return <Redirect href="/recommend" />;
 
   const redo = () => router.dismissTo('/recommend');

@@ -41,8 +41,6 @@ import { Text } from '@/components/ui/Text';
 import { colors, radius, shadows, space, type ColorToken } from '@/theme/tokens';
 import type { TextVariant } from '@/theme/typography';
 
-// Rota de desenvolvimento: espelha o UI Kit do Figma (página "Protótipo Hi-Fi", seção "0. Componentes Master").
-
 const colorGroups: { title: string; tokens: ColorToken[] }[] = [
   { title: 'Marca (só no logotipo)', tokens: ['marca'] },
   { title: 'Neutros', tokens: ['fundo', 'superficie', 'superficie-alt', 'linha', 'linha-controle'] },
@@ -102,7 +100,6 @@ const icons: [string, Icon][] = [
   ['share-network', ShareNetwork],
 ];
 
-// Fill só no estado ativo da barra de abas e em ações ligadas.
 const filledIcons: [string, Icon][] = [
   ['house-fill', House],
   ['sparkle-fill', Sparkle],

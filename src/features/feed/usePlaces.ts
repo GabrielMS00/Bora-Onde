@@ -5,7 +5,6 @@ import { fetchPlacesByCity } from '@/data/api/placesApi';
 import { photoUrl } from '@/data/supabase';
 import type { Place } from '@/data/types';
 
-/** Lugares da cidade com as fotos já convertidas em URLs públicas (o banco guarda só os paths). */
 export function usePlaces(city: string | undefined) {
   const query = useQuery({
     queryKey: ['places', city],

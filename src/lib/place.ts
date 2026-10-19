@@ -12,7 +12,6 @@ export const vibeLabel: Record<Vibe, string> = {
   romantic: 'Encontro romântico',
 };
 
-// Hashtags em CamelCase com acento (manual da marca).
 const vibeTag: Record<Vibe, string> = {
   family: '#Familiar',
   friends: '#ComAmigos',
@@ -24,13 +23,11 @@ export function formatCep(digits: string): string {
   return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
 }
 
-/** "CLS 405, Loja 12 · Asa Sul, Brasília/DF · 70239-510" */
 export function formatAddress(place: Place): string {
   const cityState = place.city.replace(/,\s*/, '/');
   return `${place.street}, ${place.number} · ${place.neighborhood}, ${cityState} · ${formatCep(place.cep)}`;
 }
 
-/** "Bar · Asa Sul" — sem o tipo, só o bairro (lugar sem Dados Extras). */
 export function formatMeta(place: Place): string {
   const type = place.metadata?.type;
   return type ? `${placeTypeLabel[type]} · ${place.neighborhood}` : place.neighborhood;
@@ -38,10 +35,6 @@ export function formatMeta(place: Place): string {
 
 export type PlaceTag = { label: string; type?: PlaceType };
 
-/**
- * Até 3 tags: tipo, primeira vibe, álcool, demais vibes (assim "Bar · #ComAmigos · #ComÁlcool", como no Figma,
- * mesmo quando o lugar tem mais de uma vibe). Vazio se o lugar ainda não tem Dados Extras.
- */
 export function placeTags(place: Place): PlaceTag[] {
   const meta = place.metadata;
   if (!meta) return [];

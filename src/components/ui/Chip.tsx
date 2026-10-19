@@ -5,18 +5,13 @@ import { colors } from '@/theme/tokens';
 
 import { Text } from './Text';
 
-// Figma › Chip: "uma pílula, três usos". Filtro (36 px) no feed; Indicação (48 px) nas perguntas;
-// Tag (24 px) informativa dentro do card. A seleção vira acento e sempre ganha check (no lugar do ícone).
-
 export type ChipVariant = 'filtro' | 'indicacao' | 'tag';
 
 type Props = {
   label: string;
   variant?: ChipVariant;
   selected?: boolean;
-  /** Ícone de categoria; some quando selecionado (o check ocupa o lugar). */
   icon?: Icon;
-  /** Filtro que abre painel (ex.: "Ambiente ▾"). */
   dropdown?: boolean;
   onPress?: () => void;
 };
@@ -52,7 +47,6 @@ export function Chip({ label, variant = 'filtro', selected = false, icon: IconCo
         <IconComponent size={big ? 20 : 16} color={fg} />
       ) : null}
       {big ? (
-        // 16 px nas perguntas da Indicação (rotulo é 14 px, usado no filtro).
         <Text variant="rotulo" tone={selected ? 'sobre-acento' : 'texto'} style={{ fontSize: 16, lineHeight: 20 }}>
           {label}
         </Text>

@@ -10,21 +10,13 @@ export type Session = { role: Role; accountId: string; email: string };
 
 type SessionContextValue = {
   session: Session | null;
-  /** true até o Supabase restaurar (ou descartar) a sessão salva no aparelho. */
   loading: boolean;
   signOut: () => Promise<void>;
-  /**
-   * Executa `fn` mantendo a sessão "oculta" para a navegação até terminar. Usado no cadastro de estabelecimento:
-   * o signUp já cria a sessão, mas o app só deve ir ao feed depois que as fotos subirem (senão o formulário some
-   * no meio do envio e o lugar aparece sem fotos).
-   */
   withSessionHeld: <T>(fn: () => Promise<T>) => Promise<T>;
 };
 
 const SessionContext = createContext<SessionContextValue | null>(null);
 
-// O papel é gravado em user_metadata.role no cadastro. Serve só para escolher o fluxo de telas: o que cada papel
-// pode ler/escrever é decidido pelo banco (RLS), não por este valor.
 function toSession(s: SupabaseSession | null): Session | null {
   if (!s) return null;
   const role: Role = s.user.user_metadata?.role === 'establishment' ? 'establishment' : 'user';
@@ -42,7 +34,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    // Importante: o callback só atualiza estado (chamar o supabase aqui dentro pode travar o cliente).
     const { data } = supabase.auth.onAuthStateChange((_event, next) => {
       setSession(toSession(next));
       setLoading(false);

@@ -2,7 +2,6 @@ import { Redirect } from 'expo-router';
 
 import { useSession } from '@/features/auth/session';
 
-// Ponto de entrada: manda para o fluxo do papel da sessão (ou para o login).
 export default function Index() {
   const { session } = useSession();
 

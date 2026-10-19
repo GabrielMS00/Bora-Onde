@@ -4,7 +4,6 @@ import { useSession } from '@/features/auth/session';
 
 import { fetchMyUser } from './profileApi';
 
-/** Perfil do usuário logado (nome, idade, sexo, cidade). */
 export function useMyUser() {
   const { session } = useSession();
   return useQuery({

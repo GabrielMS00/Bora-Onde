@@ -2,8 +2,6 @@ import { Text as RNText, type TextProps } from 'react-native';
 
 import { typography, type TextVariant } from '@/theme/typography';
 
-// Cor por `tone` (e não por className): no Tailwind a ordem das classes não decide a precedência,
-// então um `text-*` extra não sobrescreve de forma confiável o padrão.
 const tones = {
   texto: 'text-texto',
   secundario: 'text-texto-secundario',

@@ -20,9 +20,6 @@ import { colors } from '@/theme/tokens';
 import { NO_FILTERS, filterPlaces, hasFilters, resultLabel, type FeedFilters } from './filters';
 import { usePlaces } from './usePlaces';
 
-// Feed compartilhado: o Usuário vê os lugares da cidade do perfil; o Estabelecimento vê o feed da região do seu
-// próprio lugar, com um aviso de como ele aparece (Figma 2.1 / 2.1b / 3.1).
-
 const typeChips: { type: PlaceType; icon: Icon }[] = [
   { type: 'restaurant', icon: ForkKnife },
   { type: 'cafe', icon: Coffee },
@@ -51,7 +48,6 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
   const [filters, setFilters] = useState<FeedFilters>(NO_FILTERS);
   const [vibeSheet, setVibeSheet] = useState(false);
 
-  // Os dois hooks são chamados sempre; só o do papel logado busca (enabled).
   const user = useMyUser();
   const mine = useMyPlace();
   const context = mode === 'user' ? user : mine;
