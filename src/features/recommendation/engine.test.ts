@@ -8,15 +8,15 @@ const place = (id: string, name: string, metadata?: PlaceMetadata): Place => ({
   id,
   name,
   photos: [],
-  cep: '13025151',
-  city: 'Campinas, SP',
-  neighborhood: 'Cambuí',
+  cep: '70239510',
+  city: 'Brasília, DF',
+  neighborhood: 'Asa Sul',
   street: 'Rua Teste',
   number: '1',
   metadata,
 });
 
-// Espelha o seed de Campinas.
+// Espelha o seed de Brasília.
 const barDoZe = place('bar-do-ze', 'Bar do Zé', { type: 'bar', vibes: ['friends', 'romantic'], sellsAlcohol: true });
 const boteco = place('boteco', 'Boteco Esquina', { type: 'bar', vibes: ['friends'], sellsAlcohol: true });
 const cafe = place('cafe', 'Café Grão Fino', { type: 'cafe', vibes: ['family', 'friends'], sellsAlcohol: false });

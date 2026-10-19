@@ -110,7 +110,7 @@ export default function SignupEstablishmentScreen() {
           control={control}
           name="neighborhood"
           render={({ field, fieldState }) => (
-            <TextField label="Bairro" placeholder="Ex.: Cambuí" autoCapitalize="words" value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
+            <TextField label="Bairro" placeholder="Ex.: Asa Sul" autoCapitalize="words" value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
           )}
         />
         <View className="flex-row items-start gap-3">

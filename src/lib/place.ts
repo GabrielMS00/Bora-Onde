@@ -24,13 +24,13 @@ export function formatCep(digits: string): string {
   return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
 }
 
-/** "Rua Maria Monteiro, 820 · Cambuí, Campinas/SP · 13025-151" */
+/** "CLS 405, Loja 12 · Asa Sul, Brasília/DF · 70239-510" */
 export function formatAddress(place: Place): string {
   const cityState = place.city.replace(/,\s*/, '/');
   return `${place.street}, ${place.number} · ${place.neighborhood}, ${cityState} · ${formatCep(place.cep)}`;
 }
 
-/** "Bar · Cambuí" — sem o tipo, só o bairro (lugar sem Dados Extras). */
+/** "Bar · Asa Sul" — sem o tipo, só o bairro (lugar sem Dados Extras). */
 export function formatMeta(place: Place): string {
   const type = place.metadata?.type;
   return type ? `${placeTypeLabel[type]} · ${place.neighborhood}` : place.neighborhood;

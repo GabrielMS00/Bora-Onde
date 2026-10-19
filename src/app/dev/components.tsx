@@ -28,15 +28,15 @@ const samplePlace: Place = {
   id: 'demo',
   name: 'Bar do Zé',
   photos: [swatch('#D9CFC1'), swatch('#C9BFAF'), swatch('#B9AE9C')],
-  cep: '13025151',
-  city: 'Campinas, SP',
-  neighborhood: 'Cambuí',
-  street: 'Rua Maria Monteiro',
-  number: '820',
+  cep: '70239510',
+  city: 'Brasília, DF',
+  neighborhood: 'Asa Sul',
+  street: 'CLS 405',
+  number: 'Loja 12',
   metadata: { type: 'bar', vibes: ['friends'], sellsAlcohol: true },
 };
 
-const cities = ['Campinas, SP', 'São Paulo, SP', 'Belo Horizonte, MG'];
+const cities = ['Brasília, DF', 'São Paulo, SP', 'Belo Horizonte, MG'];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -67,7 +67,7 @@ export default function ComponentsGallery() {
   const [alcohol, setAlcohol] = useState<'yes' | 'no'>('yes');
   const [filter, setFilter] = useState('Todos');
   const [quiz, setQuiz] = useState('Bar');
-  const [city, setCity] = useState<string | undefined>('Campinas, SP');
+  const [city, setCity] = useState<string | undefined>('Brasília, DF');
   const [sheet, setSheet] = useState(false);
   const [modal, setModal] = useState<'none' | 'destrutivo' | 'sucesso'>('none');
   const [email, setEmail] = useState('');
@@ -218,7 +218,7 @@ export default function ComponentsGallery() {
             </View>
           </Row>
           <Row label="estado vazio / erro / carregando">
-            <EmptyState title="Nenhum lugar encontrado" message="Nenhum lugar com esses critérios em Campinas." actionLabel="Limpar filtros" onAction={() => {}} />
+            <EmptyState title="Nenhum lugar encontrado" message="Nenhum lugar com esses critérios em Brasília." actionLabel="Limpar filtros" onAction={() => {}} />
             <ErrorState message="Não foi possível carregar os lugares." actionLabel="Tentar novamente" onAction={() => {}} />
             <View className="gap-2">
               <Skeleton className="h-[200px] w-full" />

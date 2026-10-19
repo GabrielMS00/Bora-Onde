@@ -59,7 +59,7 @@ const anon = newClient();
 
   const { data: city, error: cityErr } = await ana.client.from('users').update({ city: 'São Paulo, SP' }).eq('id', ana.uid).select();
   expect('Ana ALTERA a própria cidade', !cityErr && city?.length === 1);
-  await ana.client.from('users').update({ city: 'Campinas, SP' }).eq('id', ana.uid); // restaura
+  await ana.client.from('users').update({ city: 'Brasília, DF' }).eq('id', ana.uid); // restaura
 
   const { data: upd } = await ana.client.from('establishments').update({ name: 'Invadido' }).eq('name', 'Bar do Zé').select();
   expect('Ana NÃO edita lugar de outro dono', !upd || upd.length === 0, `linhas afetadas: ${upd?.length ?? 0}`);

@@ -17,7 +17,7 @@ export type Place = {
   photos: string[];
   /** Somente dígitos (8). */
   cep: string;
-  /** Formato "Campinas, SP". */
+  /** Formato "Brasília, DF". */
   city: string;
   neighborhood: string;
   street: string;
