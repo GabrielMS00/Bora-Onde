@@ -3,8 +3,6 @@
 Na dúvida de onde ir comer ou beber? O **Bora Onde** mostra restaurantes, cafeterias e bares da sua cidade e, depois
 de 3 perguntas rápidas, indica o lugar certo para o seu momento.
 
-É um projeto de portfólio, e os estabelecimentos são fictícios.
-
 <p align="center"><img src="docs/demo.gif" alt="Demonstração do app" width="260"></p>
 
 ## O que dá para fazer
