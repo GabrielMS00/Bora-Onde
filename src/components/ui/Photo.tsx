@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Image as ImageIcon, Plus, X } from 'phosphor-react-native';
+import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { colors, shadows } from '@/theme/tokens';
@@ -20,15 +21,18 @@ type FrameProps = {
 };
 
 export function PhotoFrame({ uri, ratio = '4:5', className, accessibilityLabel }: FrameProps) {
+  // Se a imagem falhar (rede, URL quebrada), mostra o placeholder em vez de um quadro vazio.
+  const [failedUri, setFailedUri] = useState<string>();
   return (
     <View className={`w-full items-center justify-center overflow-hidden bg-superficie-alt ${className ?? ''}`} style={{ aspectRatio: ratios[ratio] }}>
-      {uri ? (
+      {uri && failedUri !== uri ? (
         <Image
           source={{ uri }}
           contentFit="cover"
           transition={200}
           style={{ width: '100%', height: '100%' }}
           accessibilityLabel={accessibilityLabel}
+          onError={() => setFailedUri(uri)}
         />
       ) : (
         <ImageIcon size={24} color={colors['texto-secundario']} />
@@ -46,9 +50,14 @@ type ThumbProps = {
 
 /** Miniatura 1:1 (96 px) com botão opcional de remover. */
 export function PhotoThumb({ uri, size = 96, onRemove }: ThumbProps) {
+  const [failedUri, setFailedUri] = useState<string>();
   return (
-    <View style={{ width: size, height: size }} className="overflow-hidden rounded-md bg-superficie-alt">
-      {uri ? <Image source={{ uri }} contentFit="cover" transition={200} style={{ width: size, height: size }} /> : null}
+    <View style={{ width: size, height: size }} className="items-center justify-center overflow-hidden rounded-md bg-superficie-alt">
+      {uri && failedUri !== uri ? (
+        <Image source={{ uri }} contentFit="cover" transition={200} style={{ width: size, height: size }} onError={() => setFailedUri(uri)} />
+      ) : (
+        <ImageIcon size={20} color={colors['texto-secundario']} />
+      )}
       {onRemove ? (
         <Pressable
           accessibilityRole="button"

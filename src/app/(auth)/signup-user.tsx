@@ -16,7 +16,6 @@ import { signupUserSchema, type SignupUserForm } from '@/features/auth/schemas';
 const GENDERS = [
   { value: 'F', label: 'Feminino' },
   { value: 'M', label: 'Masculino' },
-  { value: 'O', label: 'Outro' },
 ] as const;
 
 // 1.3 Cadastro de usuário. Ao concluir, a sessão muda e o guard leva ao feed da cidade escolhida.

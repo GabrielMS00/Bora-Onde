@@ -1,8 +1,10 @@
-// Popula o Supabase com a demonstração: contas demo, 4 lugares de Campinas, metadados e fotos.
+// Popula o Supabase com a demonstração: contas demo, 12 lugares (Campinas, São Paulo e Belo Horizonte),
+// metadados e fotos (supabase/seed-assets).
 // Idempotente (pode rodar quantas vezes quiser). Uso: node scripts/seed.mjs
 // Requer .env.seed (SUPABASE_URL + SUPABASE_SECRET_KEY) e a migration 0001 já aplicada.
 import { createClient } from '@supabase/supabase-js';
-import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { readFile, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -79,6 +81,95 @@ const PLACES = [
     number: '450',
     metadata: { type: 'bar', vibes: ['friends'], sells_alcohol: true },
   },
+  // ── extras: dão resultado a todas as combinações do questionário em Campinas e permitem trocar de cidade ──
+  {
+    id: '00000000-0000-4000-8000-000000000005',
+    slug: 'atelie-do-cafe',
+    name: 'Ateliê do Café',
+    cep: '13075460',
+    city: 'Campinas, SP',
+    neighborhood: 'Taquaral',
+    street: 'Avenida Doutor Heitor Penteado',
+    number: '1500',
+    metadata: { type: 'cafe', vibes: ['romantic', 'friends'], sells_alcohol: false },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000006',
+    slug: 'raizes',
+    name: 'Raízes',
+    cep: '13083852',
+    city: 'Campinas, SP',
+    neighborhood: 'Barão Geraldo',
+    street: 'Avenida Albert Einstein',
+    number: '800',
+    metadata: { type: 'restaurant', vibes: ['friends', 'family'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000007',
+    slug: 'taberna-do-barao',
+    name: 'Taberna do Barão',
+    cep: '13015080',
+    city: 'Campinas, SP',
+    neighborhood: 'Centro',
+    street: 'Rua Doutor Quirino',
+    number: '350',
+    metadata: { type: 'bar', vibes: ['romantic'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000008',
+    slug: 'quintal-da-vo',
+    name: 'Quintal da Vó',
+    cep: '13076000',
+    city: 'Campinas, SP',
+    neighborhood: 'Taquaral',
+    street: 'Rua Álvaro Müller',
+    number: '220',
+    metadata: { type: 'restaurant', vibes: ['family'], sells_alcohol: false },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000009',
+    slug: 'paulista-bistro',
+    name: 'Paulista Bistrô',
+    cep: '01310200',
+    city: 'São Paulo, SP',
+    neighborhood: 'Bela Vista',
+    street: 'Avenida Paulista',
+    number: '1500',
+    metadata: { type: 'restaurant', vibes: ['romantic', 'friends'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000010',
+    slug: 'bar-sampa',
+    name: 'Bar Sampa',
+    cep: '05433010',
+    city: 'São Paulo, SP',
+    neighborhood: 'Vila Madalena',
+    street: 'Rua Aspicuelta',
+    number: '120',
+    metadata: { type: 'bar', vibes: ['friends'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000011',
+    slug: 'cafe-mineiro',
+    name: 'Café Mineiro',
+    cep: '30130151',
+    city: 'Belo Horizonte, MG',
+    neighborhood: 'Savassi',
+    street: 'Rua Pernambuco',
+    number: '1000',
+    metadata: { type: 'cafe', vibes: ['family', 'friends'], sells_alcohol: false },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000012',
+    slug: 'pe-de-moleque',
+    name: 'Pé de Moleque',
+    cep: '30140100',
+    city: 'Belo Horizonte, MG',
+    neighborhood: 'Funcionários',
+    street: 'Rua Cláudio Manoel',
+    number: '500',
+    metadata: { type: 'bar', vibes: ['friends'], sells_alcohol: true },
+  },
 ];
 
 function check(error, what) {
@@ -113,19 +204,42 @@ async function ensureUser(email, meta) {
   process.exit(1);
 }
 
+// Sobe as fotos `{slug}-{n}.jpg` de supabase/seed-assets (n = 1 é a capa; em ordem numérica). Créditos: CREDITS.md.
 async function uploadPhotos(slug) {
+  const dir = join(root, 'supabase', 'seed-assets');
+  const files = (await readdir(dir))
+    .filter((f) => new RegExp(`^${slug}-\\d+\\.jpg$`).test(f))
+    .sort((a, b) => parseInt(a.match(/-(\d+)\.jpg$/)[1]) - parseInt(b.match(/-(\d+)\.jpg$/)[1]));
+  if (files.length === 0) check({ message: `nenhuma foto em seed-assets para "${slug}"` }, 'fotos');
+
   const paths = [];
-  for (const n of [1, 2, 3]) {
-    const file = join(root, 'supabase', 'seed-assets', `${slug}-${n}.jpg`);
-    const path = `seed/${slug}-${n}.jpg`;
-    const { error } = await supabase.storage.from(BUCKET).upload(path, await readFile(file), {
+  for (const file of files) {
+    const body = await readFile(join(dir, file));
+    // O hash do conteúdo entra no nome: trocar a foto muda a URL, o que invalida o cache do CDN (max-age) e o cache
+    // em disco do expo-image no aparelho (que é por URL). Por isso o arquivo é imutável e pode ficar em cache por 1 ano.
+    const hash = createHash('sha1').update(body).digest('hex').slice(0, 8);
+    const path = `seed/${file.replace(/\.jpg$/, '')}-${hash}.jpg`;
+    const { error } = await supabase.storage.from(BUCKET).upload(path, body, {
       contentType: 'image/jpeg',
+      cacheControl: '31536000',
       upsert: true,
     });
     check(error, `upload ${path}`);
     paths.push(path);
   }
   return paths;
+}
+
+// Remove de seed/ os arquivos que nenhum lugar referencia mais (nomes antigos, sem hash, ou fotos trocadas).
+async function pruneSeedPhotos(keep) {
+  const { data, error } = await supabase.storage.from(BUCKET).list('seed', { limit: 1000 });
+  check(error, 'listar seed/');
+  const stale = data.map((f) => `seed/${f.name}`).filter((p) => !keep.has(p));
+  if (stale.length) {
+    const { error: rmError } = await supabase.storage.from(BUCKET).remove(stale);
+    check(rmError, 'remover fotos antigas');
+  }
+  return stale.length;
 }
 
 // ── contas demo ──
@@ -142,8 +256,10 @@ function pick(obj, keys) {
 }
 
 // ── lugares ──
+const keepPhotos = new Set();
 for (const place of PLACES) {
   const photos = await uploadPhotos(place.slug);
+  photos.forEach((p) => keepPhotos.add(p));
   const base = {
     name: place.name,
     cep: place.cep,
@@ -182,5 +298,9 @@ for (const place of PLACES) {
   check(error, `metadados de ${place.name}`);
   console.log(`✓ ${place.name}${place.ownerEmail ? ` (dono: ${place.ownerEmail})` : ''}`);
 }
+
+// Só depois dos upserts (os lugares já apontam para os novos nomes) é seguro apagar os antigos.
+const pruned = await pruneSeedPhotos(keepPhotos);
+console.log(`✓ fotos: ${keepPhotos.size} em seed/ (${pruned} antigas removidas)`);
 
 console.log(`\nPronto. Senha das contas demo: ${PASSWORD}`);
