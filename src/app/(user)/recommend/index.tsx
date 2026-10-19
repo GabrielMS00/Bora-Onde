@@ -46,9 +46,17 @@ function Question({ number, title, children }: { number: number; title: string; 
   );
 }
 
-function Options<T extends string>({ options, value, onChange }: { options: Option<T>[]; value: T | undefined; onChange: (v: T) => void }) {
+// Tocar de novo na opção marcada desmarca a resposta (volta a `undefined`).
+function Options<T extends string>({ options, value, onChange }: { options: Option<T>[]; value: T | undefined; onChange: (v: T | undefined) => void }) {
   return options.map((o) => (
-    <Chip key={o.value} variant="indicacao" label={o.label} icon={o.icon} selected={value === o.value} onPress={() => onChange(o.value)} />
+    <Chip
+      key={o.value}
+      variant="indicacao"
+      label={o.label}
+      icon={o.icon}
+      selected={value === o.value}
+      onPress={() => onChange(value === o.value ? undefined : o.value)}
+    />
   ));
 }
 
