@@ -31,7 +31,9 @@ export function PlaceCard({ place, variant = 'feed', caption }: Props) {
   const [index, setIndex] = useState(0);
   const tags = placeTags(place);
 
-  const onLayout = (e: LayoutChangeEvent) => setWidth(Math.round(e.nativeEvent.layout.width));
+  // A página do carrossel precisa ter exatamente a largura do viewport: medida dentro da borda do card e sem
+  // arredondar, senão cada foto sobra alguns px e a anterior "vaza" para a seguinte a cada página.
+  const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
 
   const address = (
     <View className="flex-row items-start gap-2">
@@ -54,25 +56,27 @@ export function PlaceCard({ place, variant = 'feed', caption }: Props) {
       className={destaque ? 'rounded-xl' : ''}
       style={destaque ? { boxShadow: shadows['sombra-2'] } : undefined}
       accessibilityLabel={`${place.name}. ${formatMeta(place)}`}>
-      <View className="overflow-hidden rounded-xl border border-linha bg-superficie" onLayout={onLayout}>
-        {width > 0 && place.photos.length > 1 ? (
-          <FlatList
-            data={place.photos}
-            keyExtractor={(uri) => uri}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={(e) => setIndex(Math.round(e.nativeEvent.contentOffset.x / width))}
-            getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
-            renderItem={({ item }) => (
-              <View style={{ width, height: width / aspect }}>
-                <PhotoFrame uri={item} ratio={ratio} accessibilityLabel={`Foto de ${place.name}`} />
-              </View>
-            )}
-          />
-        ) : (
-          <PhotoFrame uri={place.photos[0]} ratio={ratio} accessibilityLabel={`Foto de ${place.name}`} />
-        )}
+      <View className="overflow-hidden rounded-xl border border-linha bg-superficie">
+        <View onLayout={onLayout}>
+          {width > 0 && place.photos.length > 1 ? (
+            <FlatList
+              data={place.photos}
+              keyExtractor={(uri) => uri}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onMomentumScrollEnd={(e) => setIndex(Math.round(e.nativeEvent.contentOffset.x / width))}
+              getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
+              renderItem={({ item }) => (
+                <View style={{ width, height: width / aspect }}>
+                  <PhotoFrame uri={item} ratio={ratio} accessibilityLabel={`Foto de ${place.name}`} />
+                </View>
+              )}
+            />
+          ) : (
+            <PhotoFrame uri={place.photos[0]} ratio={ratio} accessibilityLabel={`Foto de ${place.name}`} />
+          )}
+        </View>
 
         {place.photos.length > 1 ? (
           <View className="flex-row items-center justify-center gap-[6px] pt-3" accessibilityElementsHidden>
