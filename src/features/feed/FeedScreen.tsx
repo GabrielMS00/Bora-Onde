@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { CaretDown, Coffee, Eye, ForkKnife, MapPin, Wine, type Icon } from 'phosphor-react-native';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
@@ -56,6 +56,11 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
   const mine = useMyPlace();
   const context = mode === 'user' ? user : mine;
   const city = mode === 'user' ? user.data?.city : mine.data?.city;
+
+  const listRef = useRef<FlatList>(null);
+  useEffect(() => {
+    listRef.current?.scrollToOffset({ offset: 0, animated: false });
+  }, [city]);
 
   const placesQuery = usePlaces(city);
   const { places } = placesQuery;
@@ -144,6 +149,7 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
         <ErrorState message="Não foi possível carregar os lugares. Verifique a conexão." actionLabel="Tentar novamente" onAction={retry} />
       ) : (
         <FlatList
+          ref={listRef}
           data={loading ? [] : visible}
           keyExtractor={(p) => p.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
