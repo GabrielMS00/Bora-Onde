@@ -57,20 +57,21 @@ function ToastView({ toast, onDone }: { toast: ToastState; onDone: () => void })
       pointerEvents="none"
       accessibilityRole="alert"
       accessibilityLiveRegion="polite"
-      style={{ opacity, position: 'absolute', left: 20, right: 20, top: insets.top + 8, boxShadow: shadows['sombra-2'] }}
-      className="flex-row items-start gap-3 rounded-lg border border-linha bg-superficie p-4">
-      <View className={`h-6 w-6 items-center justify-center rounded-pilula ${success ? 'bg-sucesso-suave' : 'bg-erro-suave'}`}>
-        {success ? (
-          <CheckCircle size={20} weight="fill" color={colors.sucesso} />
-        ) : (
-          <WarningCircle size={20} weight="fill" color={colors.erro} />
-        )}
-      </View>
-      <View className="flex-1 gap-[2px]">
-        <Text variant="rotulo-forte" tone={success ? 'sucesso' : 'erro'}>
-          {success ? 'Sucesso' : 'Erro'}
-        </Text>
-        <Text variant="corpo-sm">{toast.message}</Text>
+      style={{ opacity, position: 'absolute', left: 20, right: 20, top: insets.top + 8 }}>
+      <View className="flex-row items-start gap-3 rounded-lg border border-linha bg-superficie p-4" style={{ boxShadow: shadows['sombra-2'] }}>
+        <View className={`h-6 w-6 items-center justify-center rounded-pilula ${success ? 'bg-sucesso-suave' : 'bg-erro-suave'}`}>
+          {success ? (
+            <CheckCircle size={20} weight="fill" color={colors.sucesso} />
+          ) : (
+            <WarningCircle size={20} weight="fill" color={colors.erro} />
+          )}
+        </View>
+        <View className="flex-1 gap-[2px]">
+          <Text variant="rotulo-forte" tone={success ? 'sucesso' : 'erro'}>
+            {success ? 'Sucesso' : 'Erro'}
+          </Text>
+          <Text variant="corpo-sm">{toast.message}</Text>
+        </View>
       </View>
     </Animated.View>
   );

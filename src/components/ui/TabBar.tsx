@@ -1,5 +1,5 @@
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
-import { House, Sparkle, Storefront, User, type Icon } from 'phosphor-react-native';
+import { BookmarkSimple, House, Sparkle, Storefront, User, type Icon } from 'phosphor-react-native';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,17 +9,18 @@ import { Text } from './Text';
 
 export type TabRole = 'user' | 'establishment';
 
-type TabConfig = { route: string; label: string; icon: Icon; center?: boolean };
+type TabConfig = { route: string; label: string; icon: Icon; highlight?: boolean };
 
 const tabsByRole: Record<TabRole, TabConfig[]> = {
   user: [
     { route: 'feed', label: 'Feed', icon: House },
-    { route: 'recommend', label: 'Indicação', icon: Sparkle, center: true },
+    { route: 'recommend', label: 'Indicação', icon: Sparkle, highlight: true },
+    { route: 'saved', label: 'Salvos', icon: BookmarkSimple },
     { route: 'profile', label: 'Perfil', icon: User },
   ],
   establishment: [
     { route: 'region-feed', label: 'Feed da região', icon: House },
-    { route: 'recommend-setup', label: 'Indicação', icon: Sparkle, center: true },
+    { route: 'recommend-setup', label: 'Indicação', icon: Sparkle, highlight: true },
     { route: 'place-profile', label: 'Perfil do local', icon: Storefront },
   ],
 };
@@ -53,14 +54,14 @@ export function AppTabBar({ role, state, navigation }: BottomTabBarProps & { rol
               onPress={onPress}
               onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
               className="flex-1 items-center justify-center gap-1">
-              {tab.center ? (
+              {tab.highlight ? (
                 <View className="h-8 w-14 items-center justify-center rounded-pilula bg-acento">
                   <TabIcon size={20} weight="fill" color={colors['sobre-acento']} />
                 </View>
               ) : (
                 <TabIcon size={24} weight={focused ? 'fill' : 'regular'} color={focused ? colors.texto : colors['texto-secundario']} />
               )}
-              <Text variant="aba" tone={tab.center || focused ? 'texto' : 'secundario'}>
+              <Text variant="aba" tone={tab.highlight || focused ? 'texto' : 'secundario'}>
                 {tab.label}
               </Text>
             </Pressable>

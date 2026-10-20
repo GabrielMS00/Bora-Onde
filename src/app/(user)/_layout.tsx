@@ -10,6 +10,7 @@ export default function UserTabsLayout() {
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.fundo } }}>
       <Tabs.Screen name="feed" />
       <Tabs.Screen name="recommend" />
+      <Tabs.Screen name="saved" />
       <Tabs.Screen name="profile" />
     </Tabs>
   );

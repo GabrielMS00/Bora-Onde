@@ -14,6 +14,7 @@ import { EmptyState, ErrorState, Skeleton } from '@/components/ui/StateView';
 import { Text } from '@/components/ui/Text';
 import type { PlaceType, Vibe } from '@/data/types';
 import { useMyPlace } from '@/features/establishment/useMyPlace';
+import { useFavorites, useToggleFavorite } from '@/features/favorites/useFavorites';
 import { useChangeCity } from '@/features/profile/useChangeCity';
 import { useMyUser } from '@/features/profile/useMyUser';
 import { placeTypeLabel, vibeLabel } from '@/lib/place';
@@ -51,6 +52,8 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
   const [vibeSheet, setVibeSheet] = useState(false);
   const [citySheet, setCitySheet] = useState(false);
   const { changeCity } = useChangeCity();
+  const { savedIds } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
 
   const user = useMyUser();
   const mine = useMyPlace();
@@ -157,8 +160,15 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
           refreshing={placesQuery.isRefetching}
           onRefresh={() => placesQuery.refetch()}
           ListHeaderComponent={header}
+          extraData={savedIds}
           ItemSeparatorComponent={() => <View className="h-6" />}
-          renderItem={({ item }) => <PlaceCard place={item} />}
+          renderItem={({ item }) =>
+            mode === 'user' ? (
+              <PlaceCard place={item} saved={savedIds.has(item.id)} onToggleSave={() => toggleFavorite(item, savedIds.has(item.id))} />
+            ) : (
+              <PlaceCard place={item} />
+            )
+          }
           ListEmptyComponent={
             loading ? (
               <FeedSkeleton />

@@ -4,7 +4,7 @@ import type { Place, PlaceMetadata, PlaceType, Vibe } from '@/data/types';
 import { removeAllMyPhotos } from './storageApi';
 
 type MetadataRow = { type: PlaceType | null; vibes: Vibe[] | null; sells_alcohol: boolean | null };
-type PlaceRow = {
+export type PlaceRow = {
   id: string;
   name: string;
   photos: string[];
@@ -16,10 +16,10 @@ type PlaceRow = {
   establishment_metadata: MetadataRow | MetadataRow[] | null;
 };
 
-const COLUMNS =
+export const PLACE_COLUMNS =
   'id,name,photos,cep,city,neighborhood,street,number,establishment_metadata(type,vibes,sells_alcohol)';
 
-function toPlace(row: PlaceRow): Place {
+export function toPlace(row: PlaceRow): Place {
   const meta = Array.isArray(row.establishment_metadata) ? row.establishment_metadata[0] : row.establishment_metadata;
   const metadata: PlaceMetadata | undefined = meta
     ? { type: meta.type ?? undefined, vibes: meta.vibes ?? [], sellsAlcohol: meta.sells_alcohol ?? undefined }
@@ -29,13 +29,19 @@ function toPlace(row: PlaceRow): Place {
 }
 
 export async function fetchPlacesByCity(city: string): Promise<Place[]> {
-  const { data, error } = await supabase.from('establishments').select(COLUMNS).eq('city', city).order('name');
+  const { data, error } = await supabase.from('establishments').select(PLACE_COLUMNS).eq('city', city).order('name');
   if (error) throw new Error(error.message);
   return (data as unknown as PlaceRow[]).map(toPlace);
 }
 
+export async function fetchPlaceById(id: string): Promise<Place> {
+  const { data, error } = await supabase.from('establishments').select(PLACE_COLUMNS).eq('id', id).single();
+  if (error) throw new Error(error.message);
+  return toPlace(data as unknown as PlaceRow);
+}
+
 export async function fetchMyPlace(ownerId: string): Promise<Place> {
-  const { data, error } = await supabase.from('establishments').select(COLUMNS).eq('owner_id', ownerId).single();
+  const { data, error } = await supabase.from('establishments').select(PLACE_COLUMNS).eq('owner_id', ownerId).single();
   if (error) throw new Error(error.message);
   return toPlace(data as unknown as PlaceRow);
 }

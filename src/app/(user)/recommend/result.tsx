@@ -9,6 +9,7 @@ import { PlaceCard } from '@/components/ui/PlaceCard';
 import { Screen } from '@/components/ui/Screen';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/StateView';
 import { Text } from '@/components/ui/Text';
+import { useFavorites, useToggleFavorite } from '@/features/favorites/useFavorites';
 import { usePlaces } from '@/features/feed/usePlaces';
 import { useMyUser } from '@/features/profile/useMyUser';
 import { describeAnswers, parseAnswers, recommend } from '@/features/recommendation/engine';
@@ -20,6 +21,8 @@ export default function RecommendResultScreen() {
   const user = useMyUser();
   const { places, isLoading, isError, refetch } = usePlaces(user.data?.city);
   const [excluded, setExcluded] = useState<string[]>([]);
+  const { savedIds } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
 
   const current = useMemo(() => (places && answers ? recommend(places, answers, excluded) : null), [places, answers, excluded]);
   const hasMore = useMemo(
@@ -68,7 +71,13 @@ export default function RecommendResultScreen() {
               Encontramos o lugar ideal pra você, com base em: {describeAnswers(answers)}.
             </Text>
           </View>
-          <PlaceCard place={current} variant="destaque" caption="Combina com o que você pediu" />
+          <PlaceCard
+            place={current}
+            variant="destaque"
+            caption="Combina com o que você pediu"
+            saved={savedIds.has(current.id)}
+            onToggleSave={() => toggleFavorite(current, savedIds.has(current.id))}
+          />
         </View>
       ) : (
         <View className="pt-6">

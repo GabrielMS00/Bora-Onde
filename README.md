@@ -15,7 +15,8 @@ de 3 perguntas rápidas, indica o lugar certo para o seu momento.
 - Criar uma conta e ver os lugares da sua cidade, em um feed com fotos.
 - Filtrar por tipo (restaurante, cafeteria, bar), ambiente e venda de bebida alcoólica.
 - Responder ao questionário e receber uma indicação. Se não gostar, é só pedir outra.
-- Trocar a cidade do perfil, sair ou excluir a conta.
+- Salvar os lugares que interessam e encontrá-los depois na aba **Salvos**.
+- Trocar a cidade direto no feed ou no perfil, sair ou excluir a conta.
 
 **Como estabelecimento**
 - Cadastrar o local com fotos e endereço.
@@ -46,8 +47,9 @@ npm install
 
 1. Crie um projeto gratuito em [supabase.com](https://supabase.com).
 2. **Authentication → Providers → Email**: desligue **"Confirm email"** (senão o cadastro exige clicar em um link).
-3. **SQL Editor**: cole e execute [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
-   (tabelas, RLS, trigger de cadastro, bucket `place-photos` e `delete_my_account`; é idempotente).
+3. **SQL Editor**: cole e execute, nesta ordem, [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
+   (tabelas, RLS, trigger de cadastro, bucket `place-photos` e `delete_my_account`) e
+   [`supabase/migrations/0002_favorites.sql`](supabase/migrations/0002_favorites.sql) (lugares salvos). Ambas são idempotentes.
 4. Crie o `.env` a partir do `.env.example` com a URL e a chave pública (**Connect** ou *Settings → API Keys*):
 
    ```
@@ -91,10 +93,10 @@ Para ver o UI Kit: rotas ocultas `/dev/kit` (tokens) e `/dev/components` (compon
 ```
 src/app/            rotas (Expo Router): (auth), (user), (establishment), dev
 src/components/ui/  UI Kit (botão, campos, chips, seletores, card, barra de abas, toast, modais…)
-src/features/       auth, feed, recommendation, establishment, profile
+src/features/       auth, feed, recommendation, favorites, establishment, profile
 src/data/           cliente Supabase, APIs de lugares e storage, tipos
 src/theme/          tokens do Figma (tokens.json é a fonte única: Tailwind + TypeScript)
-supabase/           migration SQL e fotos de seed (com CREDITS.md)
+supabase/           migrations SQL e fotos de seed (com CREDITS.md)
 scripts/            seed.mjs e check-rls.mjs
 ```
 

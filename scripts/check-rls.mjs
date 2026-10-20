@@ -57,9 +57,10 @@ const anon = newClient();
   const { error: ageErr } = await ana.client.from('users').update({ age: 99 }).eq('id', ana.uid);
   expect('Ana NÃO altera a idade', !!ageErr, ageErr?.message);
 
+  const { data: before } = await ana.client.from('users').select('city').eq('id', ana.uid).single();
   const { data: city, error: cityErr } = await ana.client.from('users').update({ city: 'São Paulo, SP' }).eq('id', ana.uid).select();
   expect('Ana ALTERA a própria cidade', !cityErr && city?.length === 1);
-  await ana.client.from('users').update({ city: 'Brasília, DF' }).eq('id', ana.uid); // restaura
+  await ana.client.from('users').update({ city: before.city }).eq('id', ana.uid); // restaura
 
   const { data: upd } = await ana.client.from('establishments').update({ name: 'Invadido' }).eq('name', 'Bar do Zé').select();
   expect('Ana NÃO edita lugar de outro dono', !upd || upd.length === 0, `linhas afetadas: ${upd?.length ?? 0}`);
@@ -83,6 +84,33 @@ const anon = newClient();
 
   const { error: rpcAnon } = await anon.rpc('delete_my_account');
   expect('visitante NÃO executa delete_my_account', !!rpcAnon, rpcAnon?.message);
+
+  // favoritos: só os próprios; o teste não apaga um salvo que a Ana já tinha
+  const { data: had } = await ana.client.from('favorites').select('establishment_id').eq('establishment_id', est.id);
+  const { error: favErr } = await ana.client
+    .from('favorites')
+    .upsert({ user_id: ana.uid, establishment_id: est.id }, { ignoreDuplicates: true });
+  expect('Ana SALVA um lugar', !favErr, favErr?.message);
+
+  const { error: favOther } = await ana.client.from('favorites').insert({ user_id: dono.uid, establishment_id: est.id });
+  expect('Ana NÃO salva em nome de outra conta', !!favOther, favOther?.message);
+
+  const { data: favs } = await ana.client.from('favorites').select('user_id');
+  expect('Ana só vê os próprios salvos', (favs?.length ?? 0) >= 1 && favs.every((f) => f.user_id === ana.uid), `${favs?.length} linhas`);
+
+  const { data: favAnon } = await anon.from('favorites').select('user_id');
+  expect('visitante sem login não lê salvos', !favAnon || favAnon.length === 0, `linhas: ${favAnon?.length ?? 0}`);
+
+  const { data: favDono } = await dono.client.from('favorites').select('user_id');
+  expect('dono NÃO vê os salvos da Ana', !favDono || favDono.length === 0, `linhas: ${favDono?.length ?? 0}`);
+
+  const { error: favOwner } = await dono.client.from('favorites').insert({ user_id: dono.uid, establishment_id: est.id });
+  expect('conta de estabelecimento NÃO salva lugares', !!favOwner, favOwner?.message);
+
+  if (!had?.length) {
+    const { error: favDel } = await ana.client.from('favorites').delete().eq('user_id', ana.uid).eq('establishment_id', est.id);
+    expect('Ana REMOVE o próprio salvo', !favDel, favDel?.message);
+  }
 }
 
 // ── Dono do Bar do Zé ──

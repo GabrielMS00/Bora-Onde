@@ -8,6 +8,7 @@ import { colors, shadows } from '@/theme/tokens';
 
 import { Chip } from './Chip';
 import { PhotoFrame } from './Photo';
+import { SaveButton } from './SaveButton';
 import { Text } from './Text';
 
 const typeIcon: Record<PlaceType, Icon> = { restaurant: ForkKnife, cafe: Coffee, bar: Wine };
@@ -16,9 +17,11 @@ type Props = {
   place: Place;
   variant?: 'feed' | 'destaque';
   caption?: string;
+  saved?: boolean;
+  onToggleSave?: () => void;
 };
 
-export function PlaceCard({ place, variant = 'feed', caption }: Props) {
+export function PlaceCard({ place, variant = 'feed', caption, saved = false, onToggleSave }: Props) {
   const destaque = variant === 'destaque';
   const ratio = destaque ? '3:2' : '4:5';
   const aspect = destaque ? 3 / 2 : 4 / 5;
@@ -83,7 +86,12 @@ export function PlaceCard({ place, variant = 'feed', caption }: Props) {
         ) : null}
 
         <View className="gap-1 p-4">
-          <Text variant="h2">{place.name}</Text>
+          <View className="flex-row items-start gap-2">
+            <Text variant="h2" className="flex-1">
+              {place.name}
+            </Text>
+            {onToggleSave ? <SaveButton saved={saved} placeName={place.name} onPress={onToggleSave} className="-my-[9px] -mr-[10px]" /> : null}
+          </View>
           <Text variant="corpo-sm" tone="secundario">
             {formatMeta(place)}
           </Text>

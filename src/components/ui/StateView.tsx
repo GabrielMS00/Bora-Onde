@@ -35,8 +35,8 @@ function StateView({ icon: IconComponent, tone, title, message, actionLabel, onA
   );
 }
 
-export function EmptyState(props: StateProps) {
-  return <StateView icon={MagnifyingGlass} tone="neutro" {...props} />;
+export function EmptyState({ icon = MagnifyingGlass, ...props }: StateProps & { icon?: Icon }) {
+  return <StateView icon={icon} tone="neutro" {...props} />;
 }
 
 export function ErrorState(props: Omit<StateProps, 'title'> & { title?: string }) {
@@ -57,5 +57,9 @@ export function Skeleton({ className }: { className?: string }) {
     return () => loop.stop();
   }, [opacity]);
 
-  return <Animated.View accessibilityElementsHidden style={{ opacity }} className={`rounded-md bg-superficie-alt ${className ?? ''}`} />;
+  return (
+    <Animated.View accessibilityElementsHidden style={{ opacity }}>
+      <View className={`rounded-md bg-superficie-alt ${className ?? ''}`} />
+    </Animated.View>
+  );
 }
