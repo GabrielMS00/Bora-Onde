@@ -1,7 +1,7 @@
-// Popula o Supabase com a demonstração: contas demo, 12 lugares (Brasília, São Paulo e Belo Horizonte),
+// Popula o Supabase com a demonstração: contas demo, 16 lugares (Brasília, São Paulo e Belo Horizonte),
 // metadados e fotos (supabase/seed-assets).
 // Idempotente (pode rodar quantas vezes quiser). Uso: node scripts/seed.mjs
-// Requer .env.seed (SUPABASE_URL + SUPABASE_SECRET_KEY) e a migration 0001 já aplicada.
+// Requer .env.seed (SUPABASE_URL + SUPABASE_SECRET_KEY) e as migrations 0001 a 0003 já aplicadas.
 import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
@@ -46,7 +46,7 @@ const PLACES = [
     neighborhood: 'Asa Sul',
     street: 'CLS 405',
     number: 'Loja 12',
-    metadata: { type: 'bar', vibes: ['friends', 'romantic'], sells_alcohol: true },
+    metadata: { type: 'bar', specialties: ['cocktails'], vibes: ['friends', 'romantic'], atmospheres: ['lively'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000002',
@@ -57,7 +57,7 @@ const PLACES = [
     neighborhood: 'Asa Norte',
     street: 'CLN 207',
     number: 'Bloco B',
-    metadata: { type: 'cafe', vibes: ['family', 'friends'], sells_alcohol: false },
+    metadata: { type: 'cafe', specialties: ['specialty_coffee', 'bakery'], vibes: ['family', 'friends', 'solo', 'work'], atmospheres: ['calm'], sells_alcohol: false },
   },
   {
     id: '00000000-0000-4000-8000-000000000003',
@@ -68,7 +68,7 @@ const PLACES = [
     neighborhood: 'Sudoeste',
     street: 'CLSW 103',
     number: 'Bloco A',
-    metadata: { type: 'restaurant', vibes: ['family', 'romantic'], sells_alcohol: true },
+    metadata: { type: 'restaurant', specialties: ['italian'], vibes: ['family', 'romantic', 'group'], atmospheres: ['calm'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000004',
@@ -79,7 +79,7 @@ const PLACES = [
     neighborhood: 'Asa Sul',
     street: 'CRS 506',
     number: 'Bloco C',
-    metadata: { type: 'bar', vibes: ['friends'], sells_alcohol: true },
+    metadata: { type: 'bar', specialties: ['pub', 'brewery'], vibes: ['friends', 'group'], atmospheres: ['lively', 'outdoor'], sells_alcohol: true },
   },
   // ── extras: dão resultado a todas as combinações do questionário em Brasília e permitem trocar de cidade ──
   {
@@ -91,7 +91,7 @@ const PLACES = [
     neighborhood: 'Lago Sul',
     street: 'SHIS QI 15',
     number: 'Lote 8',
-    metadata: { type: 'cafe', vibes: ['romantic', 'friends'], sells_alcohol: false },
+    metadata: { type: 'cafe', specialties: ['specialty_coffee', 'sweets'], vibes: ['romantic', 'friends', 'solo'], atmospheres: ['calm'], sells_alcohol: false },
   },
   {
     id: '00000000-0000-4000-8000-000000000006',
@@ -102,7 +102,7 @@ const PLACES = [
     neighborhood: 'Asa Norte',
     street: 'SCLN 312',
     number: 'Bloco D',
-    metadata: { type: 'restaurant', vibes: ['friends', 'family'], sells_alcohol: true },
+    metadata: { type: 'restaurant', specialties: ['brazilian'], vibes: ['friends', 'family', 'group'], atmospheres: ['lively', 'outdoor'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000007',
@@ -113,7 +113,7 @@ const PLACES = [
     neighborhood: 'Sudoeste',
     street: 'CLSW 301',
     number: 'Bloco B',
-    metadata: { type: 'bar', vibes: ['romantic'], sells_alcohol: true },
+    metadata: { type: 'bar', specialties: ['wine'], vibes: ['romantic', 'solo'], atmospheres: ['calm'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000008',
@@ -124,7 +124,52 @@ const PLACES = [
     neighborhood: 'Lago Norte',
     street: 'SHIN CA 5',
     number: 'Lote 10',
-    metadata: { type: 'restaurant', vibes: ['family'], sells_alcohol: false },
+    metadata: { type: 'restaurant', specialties: ['brazilian'], vibes: ['family'], atmospheres: ['calm', 'outdoor'], sells_alcohol: false },
+  },
+  // ── restaurantes por especialidade: cada tipo de comida do questionário tem ao menos um lugar em Brasília ──
+  {
+    id: '00000000-0000-4000-8000-000000000013',
+    slug: 'sakura-sushi-bar',
+    name: 'Sakura Sushi Bar',
+    cep: '70293510',
+    city: 'Brasília, DF',
+    neighborhood: 'Asa Sul',
+    street: 'CLS 214',
+    number: 'Bloco A',
+    metadata: { type: 'restaurant', specialties: ['japanese'], vibes: ['romantic', 'friends', 'solo', 'work'], atmospheres: ['calm'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000014',
+    slug: 'casa-jalisco',
+    name: 'Casa Jalisco',
+    cep: '70856530',
+    city: 'Brasília, DF',
+    neighborhood: 'Asa Norte',
+    street: 'CLN 408',
+    number: 'Bloco C',
+    metadata: { type: 'restaurant', specialties: ['mexican'], vibes: ['friends', 'group'], atmospheres: ['lively'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000015',
+    slug: 'sahtein',
+    name: 'Sahtein',
+    cep: '71625205',
+    city: 'Brasília, DF',
+    neighborhood: 'Lago Sul',
+    street: 'SHIS QI 11',
+    number: 'Bloco F',
+    metadata: { type: 'restaurant', specialties: ['arab'], vibes: ['family', 'friends', 'group'], atmospheres: ['outdoor', 'calm'], sells_alcohol: true },
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000016',
+    slug: 'cerrado-burger',
+    name: 'Cerrado Burger',
+    cep: '70670522',
+    city: 'Brasília, DF',
+    neighborhood: 'Sudoeste',
+    street: 'CLSW 102',
+    number: 'Bloco B',
+    metadata: { type: 'restaurant', specialties: ['burger'], vibes: ['friends', 'family', 'group', 'solo'], atmospheres: ['lively'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000009',
@@ -135,7 +180,7 @@ const PLACES = [
     neighborhood: 'Bela Vista',
     street: 'Avenida Paulista',
     number: '1500',
-    metadata: { type: 'restaurant', vibes: ['romantic', 'friends'], sells_alcohol: true },
+    metadata: { type: 'restaurant', specialties: [], vibes: ['romantic', 'friends', 'work'], atmospheres: ['calm'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000010',
@@ -146,7 +191,7 @@ const PLACES = [
     neighborhood: 'Vila Madalena',
     street: 'Rua Aspicuelta',
     number: '120',
-    metadata: { type: 'bar', vibes: ['friends'], sells_alcohol: true },
+    metadata: { type: 'bar', specialties: ['pub', 'cocktails'], vibes: ['friends', 'group'], atmospheres: ['lively'], sells_alcohol: true },
   },
   {
     id: '00000000-0000-4000-8000-000000000011',
@@ -157,7 +202,7 @@ const PLACES = [
     neighborhood: 'Savassi',
     street: 'Rua Pernambuco',
     number: '1000',
-    metadata: { type: 'cafe', vibes: ['family', 'friends'], sells_alcohol: false },
+    metadata: { type: 'cafe', specialties: ['specialty_coffee', 'bakery'], vibes: ['family', 'friends', 'work'], atmospheres: ['calm'], sells_alcohol: false },
   },
   {
     id: '00000000-0000-4000-8000-000000000012',
@@ -168,7 +213,7 @@ const PLACES = [
     neighborhood: 'Funcionários',
     street: 'Rua Cláudio Manoel',
     number: '500',
-    metadata: { type: 'bar', vibes: ['friends'], sells_alcohol: true },
+    metadata: { type: 'bar', specialties: ['pub'], vibes: ['friends', 'group'], atmospheres: ['lively', 'outdoor'], sells_alcohol: true },
   },
 ];
 

@@ -13,21 +13,25 @@ de 3 perguntas rápidas, indica o lugar certo para o seu momento.
 
 **Como usuário**
 - Criar uma conta e ver os lugares da sua cidade, em um feed com fotos.
-- Filtrar por tipo (restaurante, cafeteria, bar), ambiente e venda de bebida alcoólica.
-- Responder ao questionário e receber uma indicação. Se não gostar, é só pedir outra.
+- Filtrar por tipo (restaurante, cafeteria, bar), companhia e venda de bebida alcoólica.
+- Responder ao questionário (tipo de lugar e de comida, companhia, clima e bebida) e receber uma indicação. Se não
+  gostar, é só pedir outra.
 - Salvar os lugares que interessam e encontrá-los depois na aba **Salvos**.
 - Trocar a cidade direto no feed ou no perfil, sair ou excluir a conta.
 
 **Como estabelecimento**
 - Cadastrar o local com fotos e endereço.
 - Ver como o seu lugar aparece no feed.
-- Dizer qual é o tipo, o ambiente e se vende bebida alcoólica. É isso que decide quando o local é indicado.
+- Dizer qual é o tipo, a especialidade (ex.: japonesa, cervejaria, doceria), para quem combina, o clima e se vende
+  bebida alcoólica. É isso que decide quando o local é indicado.
 - Editar fotos e dados, ou excluir a conta.
 
 **Como a indicação escolhe o lugar**
 1. Só entram lugares do tipo escolhido e, se você precisa de bebida alcoólica, que vendam.
-2. Quem combina com a vibe (familiar, com amigos ou romântico) aparece primeiro.
-3. Em caso de empate, vale a ordem alfabética.
+2. Os demais critérios somam pontos: especialidade pedida (+4), companhia (+2) e clima (+1). Vence quem soma mais.
+3. Em caso de empate, um lugar que você salvou vem antes; depois vale a ordem alfabética.
+4. Se não houver nenhum lugar da especialidade pedida na sua cidade, o app avisa e indica o que mais combina com o
+   resto das respostas. O resultado mostra o que o lugar atende (✓) e o que não atende (✗).
 
 ## Stack
 
@@ -47,9 +51,11 @@ npm install
 
 1. Crie um projeto gratuito em [supabase.com](https://supabase.com).
 2. **Authentication → Providers → Email**: desligue **"Confirm email"** (senão o cadastro exige clicar em um link).
-3. **SQL Editor**: cole e execute, nesta ordem, [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
-   (tabelas, RLS, trigger de cadastro, bucket `place-photos` e `delete_my_account`) e
-   [`supabase/migrations/0002_favorites.sql`](supabase/migrations/0002_favorites.sql) (lugares salvos). Ambas são idempotentes.
+3. **SQL Editor**: cole e execute, nesta ordem, [`0001_init.sql`](supabase/migrations/0001_init.sql)
+   (tabelas, RLS, trigger de cadastro, bucket `place-photos` e `delete_my_account`),
+   [`0002_favorites.sql`](supabase/migrations/0002_favorites.sql) (lugares salvos) e
+   [`0003_recommendation_v2.sql`](supabase/migrations/0003_recommendation_v2.sql) (especialidade, companhia e clima).
+   Todas são idempotentes.
 4. Crie o `.env` a partir do `.env.example` com a URL e a chave pública (**Connect** ou *Settings → API Keys*):
 
    ```
@@ -62,7 +68,7 @@ npm install
 6. Popule a demonstração e confira as regras de acesso:
 
    ```bash
-   npm run seed        # contas demo, 12 lugares em 3 cidades e 45 fotos (idempotente)
+   npm run seed        # contas demo, 16 lugares em 3 cidades e 57 fotos (idempotente)
    npm run check:rls   # tenta, com contas reais, o que o RLS deve bloquear
    ```
 

@@ -11,26 +11,33 @@ import { ErrorState, Skeleton } from '@/components/ui/StateView';
 import { Text } from '@/components/ui/Text';
 import { useToast } from '@/components/ui/Toast';
 import { saveMetadata } from '@/data/api/placesApi';
-import type { Place, PlaceType, Vibe } from '@/data/types';
+import type { Atmosphere, Place, PlaceType, Specialty, Vibe } from '@/data/types';
 import { useMyPlace } from '@/features/establishment/useMyPlace';
+import { ATMOSPHERES, VIBES, atmosphereLabel, specialtiesByType, specialtyLabel, vibeLabel } from '@/lib/place';
 
 const TYPES: { type: PlaceType; label: string; icon: typeof Wine }[] = [
   { type: 'restaurant', label: 'Restaurante', icon: ForkKnife },
   { type: 'cafe', label: 'Cafeteria', icon: Coffee },
   { type: 'bar', label: 'Bar', icon: Wine },
 ];
-const VIBES: { vibe: Vibe; label: string }[] = [
-  { vibe: 'family', label: 'Familiar' },
-  { vibe: 'friends', label: 'Amigos' },
-  { vibe: 'romantic', label: 'Encontros românticos' },
-];
 const ALCOHOL = [
   { value: 'yes', label: 'Sim' },
   { value: 'no', label: 'Não' },
 ] as const;
+const MAX_SPECIALTIES = 2;
 
 type Alcohol = (typeof ALCOHOL)[number]['value'];
-type Errors = { type?: string; vibes?: string; alcohol?: string };
+type Errors = { type?: string; specialties?: string; vibes?: string; alcohol?: string };
+
+const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((i) => i !== item) : [...list, item]);
+
+function FieldError({ message }: { message?: string }) {
+  return message ? (
+    <Text variant="corpo-sm" tone="erro">
+      {message}
+    </Text>
+  ) : null;
+}
 
 function SectionTitle({ title, hint }: { title: string; hint?: string }) {
   return (
@@ -53,20 +60,37 @@ function SetupForm({ place }: { place: Place }) {
   const meta = place.metadata;
 
   const [type, setType] = useState<PlaceType | undefined>(meta?.type);
+  const [specialties, setSpecialties] = useState<Specialty[]>(meta?.specialties ?? []);
   const [vibes, setVibes] = useState<Vibe[]>(meta?.vibes ?? []);
+  const [atmospheres, setAtmospheres] = useState<Atmosphere[]>(meta?.atmospheres ?? []);
   const [alcohol, setAlcohol] = useState<Alcohol | undefined>(meta?.sellsAlcohol === undefined ? undefined : meta.sellsAlcohol ? 'yes' : 'no');
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
 
+  const chooseType = (next: PlaceType) => {
+    if (next !== type) setSpecialties([]);
+    setType(next);
+    setErrors((e) => ({ ...e, type: undefined, specialties: undefined }));
+  };
+
+  const toggleSpecialty = (specialty: Specialty) => {
+    if (!specialties.includes(specialty) && specialties.length >= MAX_SPECIALTIES) {
+      setErrors((e) => ({ ...e, specialties: `Marque no máximo ${MAX_SPECIALTIES} especialidades.` }));
+      return;
+    }
+    setSpecialties((cur) => toggle(cur, specialty));
+    setErrors((e) => ({ ...e, specialties: undefined }));
+  };
+
   const toggleVibe = (vibe: Vibe) => {
-    setVibes((cur) => (cur.includes(vibe) ? cur.filter((v) => v !== vibe) : [...cur, vibe]));
+    setVibes((cur) => toggle(cur, vibe));
     setErrors((e) => ({ ...e, vibes: undefined }));
   };
 
   const save = async () => {
     const next: Errors = {
       type: type ? undefined : 'Escolha o tipo de estabelecimento.',
-      vibes: vibes.length > 0 ? undefined : 'Marque ao menos um ambiente.',
+      vibes: vibes.length > 0 ? undefined : 'Marque ao menos uma companhia.',
       alcohol: alcohol ? undefined : 'Informe se vende bebida alcoólica.',
     };
     setErrors(next);
@@ -74,7 +98,7 @@ function SetupForm({ place }: { place: Place }) {
 
     setSaving(true);
     try {
-      await saveMetadata(place.id, { type, vibes, sellsAlcohol: alcohol === 'yes' });
+      await saveMetadata(place.id, { type, specialties, vibes, atmospheres, sellsAlcohol: alcohol === 'yes' });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['my-place'] }),
         queryClient.invalidateQueries({ queryKey: ['places'] }),
@@ -102,32 +126,42 @@ function SetupForm({ place }: { place: Place }) {
                 label={t.label}
                 icon={t.icon}
                 selected={type === t.type}
-                onPress={() => {
-                  setType(t.type);
-                  setErrors((e) => ({ ...e, type: undefined }));
-                }}
+                onPress={() => chooseType(t.type)}
               />
             ))}
           </View>
-          {errors.type ? (
-            <Text variant="corpo-sm" tone="erro">
-              {errors.type}
-            </Text>
-          ) : null}
+          <FieldError message={errors.type} />
+        </View>
+
+        {type ? (
+          <View className="gap-3">
+            <SectionTitle title="Especialidade" hint={`Até ${MAX_SPECIALTIES} · opcional`} />
+            <OptionList>
+              {specialtiesByType[type].map((s) => (
+                <ListOption key={s} label={specialtyLabel[s]} selected={specialties.includes(s)} onPress={() => toggleSpecialty(s)} />
+              ))}
+            </OptionList>
+            <FieldError message={errors.specialties} />
+          </View>
+        ) : null}
+
+        <View className="gap-3">
+          <SectionTitle title="Companhia" hint="Para quem o lugar combina · marque todas que se aplicam" />
+          <OptionList>
+            {VIBES.map((v) => (
+              <ListOption key={v} label={vibeLabel[v]} selected={vibes.includes(v)} onPress={() => toggleVibe(v)} />
+            ))}
+          </OptionList>
+          <FieldError message={errors.vibes} />
         </View>
 
         <View className="gap-3">
-          <SectionTitle title="Tipo de ambiente (vibe)" hint="Marque todas que se aplicam" />
+          <SectionTitle title="Clima" hint="Marque todos que se aplicam · opcional" />
           <OptionList>
-            {VIBES.map((v) => (
-              <ListOption key={v.vibe} label={v.label} selected={vibes.includes(v.vibe)} onPress={() => toggleVibe(v.vibe)} />
+            {ATMOSPHERES.map((a) => (
+              <ListOption key={a} label={atmosphereLabel[a]} selected={atmospheres.includes(a)} onPress={() => setAtmospheres((cur) => toggle(cur, a))} />
             ))}
           </OptionList>
-          {errors.vibes ? (
-            <Text variant="corpo-sm" tone="erro">
-              {errors.vibes}
-            </Text>
-          ) : null}
         </View>
 
         <View className="gap-3">
@@ -140,11 +174,7 @@ function SetupForm({ place }: { place: Place }) {
               setErrors((e) => ({ ...e, alcohol: undefined }));
             }}
           />
-          {errors.alcohol ? (
-            <Text variant="corpo-sm" tone="erro">
-              {errors.alcohol}
-            </Text>
-          ) : null}
+          <FieldError message={errors.alcohol} />
         </View>
       </View>
     </Screen>

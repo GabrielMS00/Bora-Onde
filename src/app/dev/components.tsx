@@ -31,7 +31,7 @@ const samplePlace: Place = {
   neighborhood: 'Asa Sul',
   street: 'CLS 405',
   number: 'Loja 12',
-  metadata: { type: 'bar', vibes: ['friends'], sellsAlcohol: true },
+  metadata: { type: 'bar', specialties: ['cocktails'], vibes: ['friends'], atmospheres: ['lively'], sellsAlcohol: true },
 };
 
 const cities = ['Brasília, DF', 'São Paulo, SP', 'Belo Horizonte, MG'];

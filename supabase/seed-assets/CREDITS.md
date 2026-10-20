@@ -35,6 +35,12 @@ Fotos de uso gratuito (licenças [Unsplash](https://unsplash.com/license) e [Pex
 | cantina-da-nonna-4.jpg | Cantina da Nonna | Tetiana Thiel | [Unsplash](https://unsplash.com/photos/a-long-table-set-up-with-candles-and-flowers-XgYb1OXCDG8) |
 | cantina-da-nonna-5.jpg | Cantina da Nonna | Antonio Araujo | [Unsplash](https://unsplash.com/photos/cozy-restaurant-interior-with-tables-and-seating-yQYtdkKOLnQ) |
 | cantina-da-nonna-6.jpg | Cantina da Nonna | Bruna Branco | [Unsplash](https://unsplash.com/photos/pasta-on-plate-with-fork-t8hTmte4O_g) |
+| casa-jalisco-1.jpg | Casa Jalisco | Art Litvinau | [Unsplash](https://unsplash.com/photos/ijDQXnFWECw) |
+| casa-jalisco-2.jpg | Casa Jalisco | Hybrid Storytellers | [Unsplash](https://unsplash.com/photos/w9LdceJSEu8) |
+| casa-jalisco-3.jpg | Casa Jalisco | Oliver Esquivel | [Unsplash](https://unsplash.com/photos/D0dNTxlljjo) |
+| cerrado-burger-1.jpg | Cerrado Burger | Dan Gold | [Unsplash](https://unsplash.com/photos/E6HjQaB7UEA) |
+| cerrado-burger-2.jpg | Cerrado Burger | Stanley Kustamin | [Unsplash](https://unsplash.com/photos/egC8A3EWFms) |
+| cerrado-burger-3.jpg | Cerrado Burger | sk | [Unsplash](https://unsplash.com/photos/uVPV_nV17Tw) |
 | paulista-bistro-1.jpg | Paulista Bistrô | Klara Kulikova | [Unsplash](https://unsplash.com/photos/white-round-table-with-chairs-yjQDnOhGE34) |
 | paulista-bistro-2.jpg | Paulista Bistrô | Vinn Koonyosying | [Unsplash](https://unsplash.com/photos/pasta-in-tomato-sauce-PLyJqEJVre0) |
 | paulista-bistro-3.jpg | Paulista Bistrô | Joseph Sung | [Unsplash](https://unsplash.com/photos/restaurant-dining-room-with-tables-and-chairs-4OcwZ7SwsJI) |
@@ -47,5 +53,11 @@ Fotos de uso gratuito (licenças [Unsplash](https://unsplash.com/license) e [Pex
 | raizes-1.jpg | Raízes | Alexander Faé | [Unsplash](https://unsplash.com/photos/empty-chairs-and-tables-inside-room-with-lights-turned-on-PK1pzUGQSjc) |
 | raizes-2.jpg | Raízes | Doğu Tuncer | [Unsplash](https://unsplash.com/photos/a-table-topped-with-plates-of-food-and-glasses-of-wine-KsVXWwHwhzo) |
 | raizes-3.jpg | Raízes | Mustafa Fatemi | [Unsplash](https://unsplash.com/photos/a-restaurant-with-a-lot-of-tables-and-chairs-ZEfHrVDF3NM) |
+| sahtein-1.jpg | Sahtein | Charles-Albert Clarysse | [Unsplash](https://unsplash.com/photos/-5B_sfWV2TE) |
+| sahtein-2.jpg | Sahtein | Chetanya Sharma | [Unsplash](https://unsplash.com/photos/zyeyksoJf78) |
+| sahtein-3.jpg | Sahtein | Ameer Albahouth | [Unsplash](https://unsplash.com/photos/JLbpoeOy5Co) |
+| sakura-sushi-bar-1.jpg | Sakura Sushi Bar | Maximilian Csali | [Unsplash](https://unsplash.com/photos/mV9VIOgojuw) |
+| sakura-sushi-bar-2.jpg | Sakura Sushi Bar | Riccardo Bergamini | [Unsplash](https://unsplash.com/photos/O2yNzXdqOu0) |
+| sakura-sushi-bar-3.jpg | Sakura Sushi Bar | Darren Ahmed Arceo | [Unsplash](https://unsplash.com/photos/hgCQ14bpmoI) |
 | taberna-do-barao-1.jpg | Taberna do Barão | Wenzy Wong | [Unsplash](https://unsplash.com/photos/dimly-lit-bar-interior-with-stools-and-plants-36sj5kmO9HU) |
 | taberna-do-barao-2.jpg | Taberna do Barão | Ambitious Studio\* | Rick Barrett | [Unsplash](https://unsplash.com/photos/clear-martini-glass-on-brown-wooden-table-QjUY7auDzUQ) |

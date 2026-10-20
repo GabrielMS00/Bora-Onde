@@ -1,9 +1,15 @@
 import { supabase } from '@/data/supabase';
-import type { Place, PlaceMetadata, PlaceType, Vibe } from '@/data/types';
+import type { Atmosphere, Place, PlaceMetadata, PlaceType, Specialty, Vibe } from '@/data/types';
 
 import { removeAllMyPhotos } from './storageApi';
 
-type MetadataRow = { type: PlaceType | null; vibes: Vibe[] | null; sells_alcohol: boolean | null };
+type MetadataRow = {
+  type: PlaceType | null;
+  specialties: Specialty[] | null;
+  vibes: Vibe[] | null;
+  atmospheres: Atmosphere[] | null;
+  sells_alcohol: boolean | null;
+};
 export type PlaceRow = {
   id: string;
   name: string;
@@ -17,12 +23,18 @@ export type PlaceRow = {
 };
 
 export const PLACE_COLUMNS =
-  'id,name,photos,cep,city,neighborhood,street,number,establishment_metadata(type,vibes,sells_alcohol)';
+  'id,name,photos,cep,city,neighborhood,street,number,establishment_metadata(type,specialties,vibes,atmospheres,sells_alcohol)';
 
 export function toPlace(row: PlaceRow): Place {
   const meta = Array.isArray(row.establishment_metadata) ? row.establishment_metadata[0] : row.establishment_metadata;
   const metadata: PlaceMetadata | undefined = meta
-    ? { type: meta.type ?? undefined, vibes: meta.vibes ?? [], sellsAlcohol: meta.sells_alcohol ?? undefined }
+    ? {
+        type: meta.type ?? undefined,
+        specialties: meta.specialties ?? [],
+        vibes: meta.vibes ?? [],
+        atmospheres: meta.atmospheres ?? [],
+        sellsAlcohol: meta.sells_alcohol ?? undefined,
+      }
     : undefined;
   const { establishment_metadata: _ignored, ...rest } = row;
   return { ...rest, metadata };
@@ -54,11 +66,21 @@ export async function updateMyPlace(id: string, fields: PlaceFields) {
   if (!data?.length) throw new Error('Não foi possível salvar: lugar não encontrado.');
 }
 
-export async function saveMetadata(placeId: string, meta: { type: PlaceType; vibes: Vibe[]; sellsAlcohol: boolean }) {
+export type MetadataFields = {
+  type: PlaceType;
+  specialties: Specialty[];
+  vibes: Vibe[];
+  atmospheres: Atmosphere[];
+  sellsAlcohol: boolean;
+};
+
+export async function saveMetadata(placeId: string, meta: MetadataFields) {
   const { error } = await supabase.from('establishment_metadata').upsert({
     establishment_id: placeId,
     type: meta.type,
+    specialties: meta.specialties,
     vibes: meta.vibes,
+    atmospheres: meta.atmospheres,
     sells_alcohol: meta.sellsAlcohol,
   });
   if (error) throw new Error(error.message);

@@ -12,12 +12,12 @@ import { Screen } from '@/components/ui/Screen';
 import { ListOption, OptionList } from '@/components/ui/Selectors';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/StateView';
 import { Text } from '@/components/ui/Text';
-import type { PlaceType, Vibe } from '@/data/types';
+import type { PlaceType } from '@/data/types';
 import { useMyPlace } from '@/features/establishment/useMyPlace';
 import { useFavorites, useToggleFavorite } from '@/features/favorites/useFavorites';
 import { useChangeCity } from '@/features/profile/useChangeCity';
 import { useMyUser } from '@/features/profile/useMyUser';
-import { placeTypeLabel, vibeLabel } from '@/lib/place';
+import { VIBES, placeTypeLabel, vibeLabel } from '@/lib/place';
 import { colors } from '@/theme/tokens';
 
 import { NO_FILTERS, filterPlaces, hasFilters, resultLabel, type FeedFilters } from './filters';
@@ -28,7 +28,6 @@ const typeChips: { type: PlaceType; icon: Icon }[] = [
   { type: 'cafe', icon: Coffee },
   { type: 'bar', icon: Wine },
 ];
-const vibes: Vibe[] = ['family', 'friends', 'romantic'];
 
 function FeedSkeleton() {
   return (
@@ -143,7 +142,7 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
           {typeChips.map(({ type, icon }) => (
             <Chip key={type} label={placeTypeLabel[type]} icon={icon} selected={filters.type === type} onPress={() => setType(filters.type === type ? null : type)} />
           ))}
-          <Chip label={filters.vibe ? vibeLabel[filters.vibe] : 'Ambiente'} dropdown selected={filters.vibe !== null} onPress={() => setVibeSheet(true)} />
+          <Chip label={filters.vibe ? vibeLabel[filters.vibe] : 'Companhia'} dropdown selected={filters.vibe !== null} onPress={() => setVibeSheet(true)} />
           <Chip label="Com álcool" selected={filters.alcohol} onPress={() => setFilters((f) => ({ ...f, alcohol: !f.alcohol }))} />
         </ScrollView>
       </View>
@@ -198,18 +197,18 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
         />
       ) : null}
 
-      <BottomSheet visible={vibeSheet} title="Ambiente" onClose={() => setVibeSheet(false)}>
+      <BottomSheet visible={vibeSheet} title="Companhia" onClose={() => setVibeSheet(false)}>
         <OptionList>
           <ListOption
             type="radio"
-            label="Qualquer ambiente"
+            label="Qualquer companhia"
             selected={filters.vibe === null}
             onPress={() => {
               setFilters((f) => ({ ...f, vibe: null }));
               setVibeSheet(false);
             }}
           />
-          {vibes.map((vibe) => (
+          {VIBES.map((vibe) => (
             <ListOption
               key={vibe}
               type="radio"

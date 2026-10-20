@@ -16,8 +16,8 @@ const place = (id: string, metadata?: PlaceMetadata): Place => ({
   metadata,
 });
 
-const bar = place('bar', { type: 'bar', vibes: ['friends'], sellsAlcohol: true });
-const cafe = place('cafe', { type: 'cafe', vibes: ['family'], sellsAlcohol: false });
+const bar = place('bar', { type: 'bar', specialties: ['pub'], vibes: ['friends'], atmospheres: ['lively'], sellsAlcohol: true });
+const cafe = place('cafe', { type: 'cafe', specialties: [], vibes: ['family'], atmospheres: ['calm'], sellsAlcohol: false });
 const novo = place('novo');
 const all = [bar, cafe, novo];
 const ids = (list: Place[]) => list.map((p) => p.id);
