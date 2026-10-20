@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { LockSimple } from 'phosphor-react-native';
 import { Fragment, useState } from 'react';
 import { View } from 'react-native';
@@ -12,7 +11,8 @@ import { Text } from '@/components/ui/Text';
 import { useToast } from '@/components/ui/Toast';
 import { deleteMyAccount } from '@/data/api/placesApi';
 import { useSession } from '@/features/auth/session';
-import { updateMyCity, type UserProfile } from '@/features/profile/profileApi';
+import type { UserProfile } from '@/features/profile/profileApi';
+import { useChangeCity } from '@/features/profile/useChangeCity';
 import { useMyUser } from '@/features/profile/useMyUser';
 import { colors } from '@/theme/tokens';
 
@@ -26,28 +26,10 @@ function initials(name: string) {
 function ProfileView({ user }: { user: UserProfile }) {
   const { session, signOut } = useSession();
   const toast = useToast();
-  const queryClient = useQueryClient();
+  const { changeCity } = useChangeCity();
 
-  const [city, setCity] = useState(user.city);
-  const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
-  const save = async () => {
-    setSaving(true);
-    try {
-      await updateMyCity(user.id, city);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['my-user'] }),
-        queryClient.invalidateQueries({ queryKey: ['places'] }),
-      ]);
-      toast.show('success', `Alterações salvas. Seu feed agora mostra os lugares de ${city.split(',')[0]}.`);
-    } catch {
-      toast.show('error', 'Não foi possível salvar as alterações. Tente novamente.');
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const remove = async () => {
     setDeleting(true);
@@ -118,16 +100,13 @@ function ProfileView({ user }: { user: UserProfile }) {
           <Text variant="h3" accessibilityRole="header">
             Sua cidade
           </Text>
-          <CityField value={city} onChange={setCity} />
+          <CityField value={user.city} onChange={changeCity} />
           <Text variant="legenda" tone="secundario">
             A cidade define quais lugares aparecem no seu feed e nas indicações.
           </Text>
         </View>
 
-        <View className="gap-3">
-          <Button label="Salvar alterações" onPress={save} loading={saving} disabled={city === user.city} />
-          <Button label="Sair da conta" variant="contorno" onPress={() => signOut()} />
-        </View>
+        <Button label="Sair da conta" variant="contorno" onPress={() => signOut()} />
 
         <View className="gap-3 border-t border-linha pt-5">
           <Text variant="rotulo-forte">Zona de perigo</Text>

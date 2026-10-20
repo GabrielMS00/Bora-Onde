@@ -6,6 +6,25 @@ import { BottomSheet } from './BottomSheet';
 import { SelectField } from './SelectField';
 import { ListOption, OptionList } from './Selectors';
 
+type SheetProps = {
+  visible: boolean;
+  value?: string;
+  onSelect: (city: string) => void;
+  onClose: () => void;
+};
+
+export function CitySheet({ visible, value, onSelect, onClose }: SheetProps) {
+  return (
+    <BottomSheet visible={visible} title="Cidade" onClose={onClose}>
+      <OptionList>
+        {CITIES.map((city) => (
+          <ListOption key={city} type="radio" label={city} selected={value === city} onPress={() => onSelect(city)} />
+        ))}
+      </OptionList>
+    </BottomSheet>
+  );
+}
+
 type Props = {
   value?: string;
   onChange: (city: string) => void;
@@ -19,22 +38,15 @@ export function CityField({ value, onChange, error, label = 'Cidade' }: Props) {
   return (
     <>
       <SelectField label={label} value={value || undefined} placeholder="Selecione sua cidade" error={error} onPress={() => setOpen(true)} />
-      <BottomSheet visible={open} title="Cidade" onClose={() => setOpen(false)}>
-        <OptionList>
-          {CITIES.map((city) => (
-            <ListOption
-              key={city}
-              type="radio"
-              label={city}
-              selected={value === city}
-              onPress={() => {
-                onChange(city);
-                setOpen(false);
-              }}
-            />
-          ))}
-        </OptionList>
-      </BottomSheet>
+      <CitySheet
+        visible={open}
+        value={value}
+        onSelect={(city) => {
+          onChange(city);
+          setOpen(false);
+        }}
+        onClose={() => setOpen(false)}
+      />
     </>
   );
 }

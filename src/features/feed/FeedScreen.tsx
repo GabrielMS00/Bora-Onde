@@ -5,6 +5,7 @@ import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { Chip } from '@/components/ui/Chip';
+import { CitySheet } from '@/components/ui/CityField';
 import { Logo } from '@/components/ui/Logo';
 import { PlaceCard } from '@/components/ui/PlaceCard';
 import { Screen } from '@/components/ui/Screen';
@@ -13,6 +14,7 @@ import { EmptyState, ErrorState, Skeleton } from '@/components/ui/StateView';
 import { Text } from '@/components/ui/Text';
 import type { PlaceType, Vibe } from '@/data/types';
 import { useMyPlace } from '@/features/establishment/useMyPlace';
+import { useChangeCity } from '@/features/profile/useChangeCity';
 import { useMyUser } from '@/features/profile/useMyUser';
 import { placeTypeLabel, vibeLabel } from '@/lib/place';
 import { colors } from '@/theme/tokens';
@@ -47,6 +49,8 @@ function FeedSkeleton() {
 export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
   const [filters, setFilters] = useState<FeedFilters>(NO_FILTERS);
   const [vibeSheet, setVibeSheet] = useState(false);
+  const [citySheet, setCitySheet] = useState(false);
+  const { changeCity } = useChangeCity();
 
   const user = useMyUser();
   const mine = useMyPlace();
@@ -117,7 +121,7 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`Cidade: ${city ?? ''}`}
-          onPress={() => router.navigate(mode === 'user' ? '/profile' : '/place-profile')}
+          onPress={() => (mode === 'user' ? setCitySheet(true) : router.navigate('/place-profile'))}
           className="h-[38px] flex-row items-center gap-2 rounded-pilula border border-linha bg-superficie px-3 active:bg-superficie-alt">
           <MapPin size={16} color={colors.texto} />
           <Text variant="rotulo-forte">{city ?? '…'}</Text>
@@ -165,6 +169,18 @@ export function FeedScreen({ mode }: { mode: 'user' | 'establishment' }) {
           }
         />
       )}
+
+      {mode === 'user' ? (
+        <CitySheet
+          visible={citySheet}
+          value={city}
+          onSelect={(next) => {
+            setCitySheet(false);
+            changeCity(next);
+          }}
+          onClose={() => setCitySheet(false)}
+        />
+      ) : null}
 
       <BottomSheet visible={vibeSheet} title="Ambiente" onClose={() => setVibeSheet(false)}>
         <OptionList>
